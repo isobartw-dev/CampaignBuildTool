@@ -1,0 +1,8 @@
+node_modules/
+dist/
+src/
+css/
+images/
+mobile/
+*.css
+*.html

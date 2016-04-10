@@ -1,0 +1,44 @@
+{
+  "name": "ISOBAR_TW-campaign_dev",
+  "version": "1.0.0",
+  "description": "ISOBAR TW frontend campaign build tools",
+  "devDependencies": {
+    "autoprefixer": "latest",
+    "browser-sync": "latest",
+    "css-mqpacker": "latest",
+    "imagemin-jpeg-recompress": "latest",
+    "imagemin-pngquant": "latest",
+    "ngrok": "^2.1.7",
+    "nodemon": "^1.9.1",
+    "parallelshell": "latest",
+    "png-jpg": "0.0.2",
+    "postcss": "latest",
+    "postcss-clean": "latest",
+    "postcss-cli": "latest",
+    "postcss-sprites": "latest",
+    "tiny-sprintf": "latest"
+  },
+  "scripts": {
+    "ngrok": "ngrok http 39976 -host-header=\"localhost:39976\"",
+    "build:folder": "md images\\sprite && md mobile\\images\\sprite",
+    "build:css": "copy css\\style.css css\\style_edit.css && copy mobile\\css\\style.css mobile\\css\\style_edit.css",
+    "build": "parallelshell \"npm run build:folder\" \"npm run build:css\"",
+    "watch:css": "nodemon -q -w /css/style_edit.css -C --exec node task/watch-postcss.js",
+    "watch:image": "nodemon -q -w D:\\Data\\My documents\\Desktop\\Output\\ -C --exec node task/imagefolder.js",
+    "watch": "parallelshell \"npm run watch:css\" \"npm run watch:image\"",
+    "dev": "npm run ngrok && npm run watch",
+    "deploy:css": "node task/deploy-postcss.js",
+    "deploy:image": "node task/imagemin.js",
+    "deploy": "parallelshell \"npm run deploy:css\" \"npm run deploy:image\""
+  },
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/isobartw-dev/campaign-build-tools.git"
+  },
+  "author": "ISOBAR_TW-frontend",
+  "bugs": {
+    "url": "https://github.com/isobartw-dev/campaign-build-tools.git/issues"
+  },
+  "homepage": "https://github.com/isobartw-dev/campaign-build-tools.git#readme"
+}
