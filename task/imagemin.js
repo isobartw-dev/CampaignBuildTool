@@ -18,7 +18,7 @@ images.forEach(function(item, index, arr){
 			}
 		};
 	});
-
+	
 	new imagemin()
 	.src(item +'*.{git,jpg,png,svg}')
 	.dest(item)
@@ -57,5 +57,5 @@ function src_callbak(origin, output){
 	}
 };
 process.on('exit', (code) => {
-  console.log(sprintf("%'=60s\n%s%5s\t %5s\t%5s\t%5s", '', 'ç¸½å…±å£“ç¸®ï¼š', png.length +' png', jpg.length +' jpg', gif.length +' gif', svg.length +' svg'));
+  console.log(sprintf("%'=60s\n%s%5s\t %5s\t%5s\t%5s", '', 'Á`¦@À£ÁY¡G', png.length +' png', jpg.length +' jpg', gif.length +' gif', svg.length +' svg'));
 });

@@ -68,7 +68,7 @@ var opts_sprite_mobile = {
 				prop: 'background-size',
 				value: Math.floor(backgroundSizeX*10)/10 + '% ' + Math.floor(backgroundSizeY*10)/10 + '%'
 			});
-
+	
 			var backgroundPosition = postcss.decl({
 				prop: 'background-position',
 				value: Math.floor(backgroundPositionX*10)/10 + '% ' + Math.floor(backgroundPositionY*10)/10 + '%'
