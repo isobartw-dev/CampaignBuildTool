@@ -46,13 +46,14 @@ fs.readdir(output, (err, files) => {
 		});
 
 		jpg.forEach(function(item, index, arr){
+			var jpg = item.replace('_jpg', '').slice(0, -4) +'.jpg';
 			images(output + item)
-				.save(output + item.split('_jpg')[0] +'.jpg', {               
-					quality : 100                    
+				.save(output + jpg, {
+					quality : 100
 				});
-			png.push(item.split('_jpg')[0] +'.jpg');
+			png.push(jpg);
 			fs.unlinkSync(output + item);
-			console.log(item.split('_jpg')[0] +'.jpg saved');
+			console.log(jpg + ' saved');
 			if(index == arr.length-1){
 				gofolder(png);
 			};

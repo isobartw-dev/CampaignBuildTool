@@ -978,7 +978,6 @@
 	},
 	"expanded_folders":
 	[
-		"/D/git-demo/campaign-build-tools"
 	],
 	"file_history":
 	[
@@ -1352,7 +1351,7 @@
 	{
 		"height": 140.0
 	},
-	"pinned_build_system": "Packages/User/node.sublime-build",
+	"pinned_build_system": "Campaign Build Tools",
 	"project": "campaign-build-tools.sublime-project",
 	"replace":
 	{
@@ -1380,7 +1379,7 @@
 		[
 			[
 				"",
-				"D:\\sublime.project\\project.sublime-project"
+				"D:\\Data\\project\\sublime text manager\\SUBARU.sublime-project"
 			]
 		],
 		"width": 380.0

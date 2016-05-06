@@ -11,7 +11,7 @@ var linereader = rl.createInterface({
 linereader.on('line', function (line) {
 	if(/VWDPort/.test(line)){
 		var d = line.split('"')[1];
-		fs.writeFile('port.txt', d, (err) => {
+		fs.writeFile('task/port.txt', d, (err) => {
 			console.log('get port')
 		})
 		linereader.close();
