@@ -1,0 +1,44 @@
+"build_systems":
+	[
+		{
+			"name": "Campaign Build Tools",
+			"variants":
+			[
+				{
+					"name": "install package",
+					"shell_cmd": "npm i",
+					"working_dir": "$file_path"
+				},
+				{
+					"name": "watch",
+					"shell_cmd": "npm run watch",
+					"working_dir": "$file_path"
+				},
+				{
+					"name": "deploy",
+					"shell_cmd": "npm run deploy",
+					"working_dir": "$file_path"
+				},
+				{
+					"name": "modify css",
+					"shell_cmd": "npm run modify:css",
+					"working_dir": "$file_path"
+				},
+				{
+					"name": "modify image",
+					"shell_cmd": "npm run modify:image",
+					"working_dir": "$file_path"
+				},
+				{
+					"name": "ngrok",
+					"shell_cmd": "npm run dev:ngrok",
+					"working_dir": "$file_path"
+				},
+				{
+					"name": "browsersync",
+					"shell_cmd": "npm run dev:browsersync",
+					"working_dir": "$file_path"
+				}
+			]
+		}
+	],

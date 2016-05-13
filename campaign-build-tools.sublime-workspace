@@ -4,6 +4,14 @@
 		"selected_items":
 		[
 			[
+				"30px",
+				"30px ->rem(320)"
+			],
+			[
+				"30p",
+				"30px ->%(320)"
+			],
+			[
 				"3px",
 				"3px ->%(320)"
 			],
@@ -511,6 +519,14 @@
 	},
 	"buffers":
 	[
+		{
+			"file": "task/imagefolder.js",
+			"settings":
+			{
+				"buffer_size": 2015,
+				"line_ending": "Windows"
+			}
+		}
 	],
 	"build_system": "Packages/Makefile/Make.sublime-build",
 	"build_system_choices":
@@ -532,13 +548,33 @@
 			]
 		]
 	],
-	"build_varint": "",
+	"build_varint": "deploy",
 	"command_palette":
 	{
-		"height": 191.0,
-		"last_filter": "build",
+		"height": 253.0,
+		"last_filter": "case",
 		"selected_items":
 		[
+			[
+				"case",
+				"Convert Case: snake_case"
+			],
+			[
+				"ins",
+				"Package Control: Install Package"
+			],
+			[
+				"modi",
+				"Modific: Show uncommitted files"
+			],
+			[
+				"mu",
+				"MultiEditUtils: Multi FindAll"
+			],
+			[
+				"remocv",
+				"Package Control: Remove Package"
+			],
 			[
 				"build",
 				"Build: New Build System"
@@ -562,10 +598,6 @@
 			[
 				"packa",
 				"Package Control: List Packages"
-			],
-			[
-				"ins",
-				"Package Control: Install Package"
 			],
 			[
 				"push",
@@ -908,11 +940,11 @@
 				"Package Control: Install Package"
 			]
 		],
-		"width": 382.0
+		"width": 486.0
 	},
 	"console":
 	{
-		"height": 330.0,
+		"height": 417.0,
 		"history":
 		[
 			"ls",
@@ -978,9 +1010,56 @@
 	},
 	"expanded_folders":
 	[
+		"/D/Data/project/github/campaign-build-tools",
+		"/D/Data/project/github/campaign-build-tools/task"
 	],
 	"file_history":
 	[
+		"/D/Data/project/github/campaign-build-tools/task/imagemin.js",
+		"/D/Data/project/github/campaign-build-tools/build-system.txt",
+		"/D/Data/project/github/campaign-build-tools/campaign-build-tools.sublime-project",
+		"/C/Users/shuang06/AppData/Roaming/Sublime Text 3/Packages/cssrem/cssrem.py",
+		"/C/Users/shuang06/AppData/Roaming/Sublime Text 3/Packages/User/Default (Windows).sublime-keymap",
+		"/C/Users/shuang06/AppData/Roaming/Sublime Text 3/Packages/User/test.py",
+		"/D/Data/project/github/campaign-build-tools/mobile/css/style_edit.css",
+		"/C/Users/shuang06/AppData/Roaming/Sublime Text 3/Packages/User/CaseConversion.sublime-settings",
+		"/C/Users/shuang06/AppData/Roaming/Sublime Text 3/Packages/Default/Preferences.sublime-settings",
+		"/C/Users/shuang06/AppData/Roaming/Sublime Text 3/Packages/User/Preferences.sublime-settings",
+		"/D/Data/My documents/Desktop/all_views_completions.py",
+		"/C/Users/shuang06/AppData/Roaming/Sublime Text 3/Packages/User/test.sublime-build",
+		"/D/Data/project/github/campaign-build-tools/package.json",
+		"/C/Users/shuang06/AppData/Roaming/Sublime Text 3/Packages/Inc-Dec-Value/Default (Windows).sublime-keymap",
+		"/C/Users/shuang06/AppData/Roaming/Sublime Text 3/Packages/Modific/Modific.sublime-settings",
+		"/C/Users/shuang06/AppData/Roaming/Sublime Text 3/Packages/User/Modific.sublime-settings",
+		"/C/Users/shuang06/AppData/Roaming/Sublime Text 3/Packages/Modific/Default (Windows).sublime-keymap",
+		"/C/Users/shuang06/AppData/Roaming/Sublime Text 3/Packages/MultiEditUtils/Default (Windows).sublime-keymap",
+		"/C/Users/shuang06/AppData/Roaming/Sublime Text 3/Packages/Default/Default (Windows).sublime-keymap",
+		"/D/Data/project/github/campaign-build-tools/task/browsersync.js",
+		"/C/Users/shuang06/AppData/Roaming/Sublime Text 3/Packages/MultiEditUtils/MultiEditUtils.sublime-settings",
+		"/C/Users/shuang06/AppData/Roaming/Sublime Text 3/Packages/User/ColorHighlighter.sublime-settings",
+		"/C/Users/shuang06/AppData/Roaming/Sublime Text 3/Packages/Color Highlighter/Default.sublime-keymap",
+		"/C/Users/shuang06/AppData/Roaming/Sublime Text 3/Packages/Color Highlighter/ColorHighlighter.sublime-settings",
+		"/C/Users/shuang06/AppData/Roaming/Sublime Text 3/Packages/Case Conversion/Default (Windows).sublime-keymap",
+		"/C/Users/shuang06/AppData/Roaming/Sublime Text 3/Packages/Case Conversion/CaseConversion.sublime-settings",
+		"/C/Users/shuang06/AppData/Roaming/Sublime Text 3/Packages/SublimeAllAutocomplete/SublimeAllAutocomplete.sublime-settings",
+		"/C/Users/shuang06/AppData/Roaming/Sublime Text 3/Packages/HTML-CSS-JS Prettify/.jsbeautifyrc",
+		"/C/Users/shuang06/AppData/Roaming/Sublime Text 3/Packages/HTML-CSS-JS Prettify/Default (Windows).sublime-keymap",
+		"/C/Users/shuang06/AppData/Roaming/Sublime Text 3/Packages/HTML-CSS-JS Prettify/HTMLPrettify.sublime-settings",
+		"/C/Users/shuang06/AppData/Roaming/Sublime Text 3/Packages/User/SublimeAllAutocomplete.sublime-settings",
+		"/C/Users/shuang06/AppData/Roaming/Sublime Text 3/Packages/CSS Format/README.md",
+		"/C/Users/shuang06/AppData/Roaming/Sublime Text 3/Packages/DocBlockr/README.md",
+		"/C/Users/shuang06/AppData/Roaming/Sublime Text 3/Packages/User/bh_core.sublime-settings",
+		"/C/Users/shuang06/AppData/Roaming/Sublime Text 3/Packages/BracketHighlighter/bh_core.sublime-settings",
+		"/C/Users/shuang06/AppData/Roaming/Sublime Text 3/Packages/BracketHighlighter/Example.sublime-keymap",
+		"/C/Users/shuang06/AppData/Roaming/Sublime Text 3/Packages/BracketHighlighter/bh_swapping.sublime-settings",
+		"/C/Users/shuang06/AppData/Roaming/Sublime Text 3/Packages/BracketHighlighter/bh_wrapping.sublime-settings",
+		"/D/Data/project/github/campaign-build-tools/task/get-port.js",
+		"/C/Users/shuang06/AppData/Roaming/Sublime Text 3/Packages/Emmet/Default (Windows).sublime-keymap",
+		"/C/Users/shuang06/AppData/Roaming/Sublime Text 3/Packages/SideBarEnhancements/Default (Windows).sublime-keymap",
+		"/C/Users/shuang06/AppData/Roaming/Sublime Text 3/Packages/SideBarEnhancements/Side Bar.sublime-settings",
+		"/C/Users/shuang06/AppData/Roaming/Sublime Text 3/Packages/FuzzyFilePath/Default (Windows).sublime-keymap",
+		"/C/Users/shuang06/AppData/Roaming/Subversion/config",
+		"/D/Data/project/github/campaign-build-tools/.gitignore",
 		"/C/Users/Snow/AppData/Roaming/Sublime Text 3/Packages/User/node.sublime-build",
 		"/D/git-demo/campaign-build-tools/hello.js",
 		"/C/Users/Snow/AppData/Roaming/Sublime Text 3/Packages/User/ls.sublime-build",
@@ -1063,56 +1142,11 @@
 		"/C/Users/Snow/AppData/Roaming/Sublime Text 3/Installed Packages/0_package_control_loader.sublime-package",
 		"/C/Users/Snow/AppData/Roaming/Sublime Text 3/Packages/dev/__init__.py",
 		"/C/Users/Snow/AppData/Roaming/Sublime Text 3/Packages/Emmet Css Snippets/Completions.sublime-completions",
-		"/C/Users/Snow/AppData/Roaming/Sublime Text 3/Packages/Emmet Css Snippets/.no-sublime-package",
-		"/C/Users/Snow/AppData/Roaming/Sublime Text 3/Packages/LiveReload/CommandAPI.py",
-		"/C/Users/Snow/AppData/Roaming/Sublime Text 3/Packages/hello.py",
-		"/C/Users/Snow/AppData/Roaming/Sublime Text 3/Packages/User/dev/show_input_panel.py",
-		"/C/Users/Snow/AppData/Roaming/Sublime Text 3/Packages/User/dev/hello.py",
-		"/C/Users/Snow/AppData/Roaming/Sublime Text 3/Packages/LiveReload/SimpleReloadPluginDelay.py",
-		"/C/Users/Snow/AppData/Roaming/Sublime Text 3/Packages/LiveReload/Makefile",
-		"/C/Users/Snow/AppData/Roaming/Sublime Text 3/Packages/LiveReload/LiveReload.py",
-		"/C/Users/Snow/AppData/Roaming/Sublime Text 3/Packages/LiveReload/LiveReload.sublime-settings",
-		"/C/Users/Snow/AppData/Roaming/Sublime Text 3/Packages/LiveReload/.travis.yml",
-		"/C/Users/Snow/AppData/Roaming/Sublime Text 3/Packages/LiveReload/server/LiveReloadAPI.py",
-		"/C/Users/Snow/AppData/Roaming/Sublime Text 3/Packages/LiveReload/server/__init__.py",
-		"/C/Users/Snow/AppData/Roaming/Sublime Text 3/Packages/LiveReload/server/Settings.py",
-		"/C/Users/Snow/AppData/Roaming/Sublime Text 3/Packages/LiveReload/requirements.txt",
-		"/C/Users/Snow/AppData/Roaming/Sublime Text 3/Packages/LiveReload/Default.sublime-commands",
-		"/C/Users/Snow/AppData/Roaming/Sublime Text 3/Packages/LiveReload/__init__.py",
-		"/C/Users/Snow/Desktop/Default.sublime-package/comment.py",
-		"/C/Users/Snow/Desktop/goto_line.py",
-		"/C/Users/Snow/Desktop/Default.sublime-commands",
-		"/C/Users/Snow/Desktop/cssrem/cssrem..sublime-commands",
-		"/C/Users/Snow/Desktop/cssrem.sublime-commands",
-		"/C/Users/Snow/AppData/Roaming/Sublime Text 3/Packages/Default/Default (Windows).sublime-keymap",
-		"/C/Users/Snow/Desktop/Indentation Rules - Comments.tmPreferences",
-		"/C/Users/Snow/Desktop/font.py",
-		"/C/Users/Snow/Desktop/show_quick_panel.py",
-		"/C/Users/Snow/Desktop/pane.py",
-		"/C/Users/Snow/Desktop/sublime_plugin.py",
-		"/C/Users/Snow/Desktop/__init__.py",
-		"/C/Users/Snow/Desktop/cssrem/Main.sublime-menu",
-		"/C/Users/Snow/Desktop/cssrem/cssrem.sublime-settings",
-		"/C/Users/Snow/Desktop/settings.py",
-		"/C/Users/Snow/Desktop/project/mod12/rules.aspx",
-		"/C/Users/Snow/Desktop/project/mod12/rules.aspx.js",
-		"/C/Users/Snow/Desktop/project/mod12/index.aspx",
-		"/C/Users/Snow/Desktop/Pngyu.lnk",
-		"/C/Users/Snow/Desktop/switch_file.py",
-		"/C/Users/Snow/AppData/Roaming/Sublime Text 2/Packages/Default/delete_word.py",
-		"/C/Users/Snow/AppData/Roaming/Sublime Text 2/Packages/Default/Find in Files.sublime-menu",
-		"/C/Users/Snow/AppData/Roaming/Sublime Text 3/Installed Packages/package-metadata.json",
-		"/C/Users/Snow/AppData/Local/Temp/7zE9879.tmp/cssrem.py",
-		"/C/Users/Snow/AppData/Roaming/Sublime Text 3/Installed Packages/cssrem.sublime-package",
-		"/C/Users/Snow/AppData/Roaming/Sublime Text 3/Packages/SublimeAllAutocomplete/SublimeAllAutocomplete.sublime-settings",
-		"/C/Users/Snow/AppData/Roaming/Sublime Text 3/Packages/User/SublimeAllAutocomplete.sublime-settings",
-		"/C/Users/Snow/AppData/Roaming/Sublime Text 3/Packages/User/LiveReload.sublime-settings",
-		"/C/Users/Snow/AppData/Roaming/Sublime Text 3/Packages/CSSFontFamily/CSSFontFamily.sublime-settings",
-		"/C/Users/Snow/AppData/Roaming/Sublime Text 3/Packages/User/CSSFontFamily.sublime-settings"
+		"/C/Users/Snow/AppData/Roaming/Sublime Text 3/Packages/Emmet Css Snippets/.no-sublime-package"
 	],
 	"find":
 	{
-		"height": 36.0
+		"height": 82.0
 	},
 	"find_in_files":
 	{
@@ -1133,6 +1167,9 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"commmit",
+			"select_line",
+			"\"},\n",
 			"auto",
 			":/\",",
 			"://\"\n",
@@ -1275,8 +1312,98 @@
 	"groups":
 	[
 		{
+			"selected": 0,
 			"sheets":
 			[
+				{
+					"buffer": 0,
+					"file": "task/imagefolder.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2015,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1595,
+								1595
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"bh_regions":
+							[
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content"
+							],
+							"color_scheme": "Packages/User/Color Highlighter/themes/Material-Theme-Darker-OceanicNext.tmTheme",
+							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 1023.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				}
 			]
 		}
 	],
@@ -1286,7 +1413,7 @@
 	},
 	"input":
 	{
-		"height": 36.0
+		"height": 82.0
 	},
 	"layout":
 	{
@@ -1351,7 +1478,7 @@
 	{
 		"height": 140.0
 	},
-	"pinned_build_system": "Campaign Build Tools",
+	"pinned_build_system": "Packages/User/test.sublime-build",
 	"project": "campaign-build-tools.sublime-project",
 	"replace":
 	{
@@ -1401,7 +1528,7 @@
 	"show_open_files": true,
 	"show_tabs": true,
 	"side_bar_visible": true,
-	"side_bar_width": 242.0,
+	"side_bar_width": 251.0,
 	"status_bar_visible": true,
 	"template_settings":
 	{

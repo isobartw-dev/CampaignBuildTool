@@ -7,43 +7,45 @@ ISOBAR TW 前端自動化建置工具
 #### 檔案結構
 1. images/sprite
 2. style_edit.css
-3. output 圖片自動歸檔
+3. output 圖片自動歸檔資料夾
 
 #### 開發
-1. 瀏覽器自動預覽(PC) 多平台測試
+1. 瀏覽器 liveload、多平台測試
 2. 自動產出 sprite
 3. 圖片壓縮
-4. CSS 合併 最佳化 壓縮
+4. CSS 合併、最佳化、壓縮
 
 ## 環境及工具
 * Node.js
   * npm script
 * git
+* Sublime Text
 
 ## package
 * browsersync
-* watch
+* ngrok
+* nodemon
 * postcss
   * sprites
-  * imagemin
+  * imagemin(pngquant+jpeg-recompress)
   * autoprefixer
   * clean
 
 ## 使用方法
 1. 安裝 [Node.js][d51f406f] 及 [git for Window][2502918c]
-2. clone 或 下載此專案
+2. clone 此專案
 3. 設定 package.jaon 及 task/*.js
-
->package.json - 修改 ngrok port 及 watch:image path  
->task - imagefolder output path
+>package.json - 修改 watch:image path  
+>task - 修改 imagefolder output path
+4. Sublime Text 執行 Init Build Tool
 [d51f406f]: https://nodejs.org/en/ "Node.js"
 [2502918c]: https://git-scm.com/ "git for Window"
 
 ## CMD指令
-``npm install`` - 安裝 package.josn 專案需要的package  
-``npm run build`` - 產生自動化需要的檔案及資料夾  
-``npm run dev`` - 測試及監聽檔案  
-``npm run deploy`` - commit或發布
+``npm install`` - 安裝 package.josn 專案需要的 package，並且產生自動化需要的檔案及資料夾  
+``npm run watch`` - 編譯檔案、圖片規檔  
+``npm run dev`` - debug 用    
+``npm run deploy`` - commit 前檔案最佳化
 
 ## 圖檔命名規則
 ```
@@ -57,5 +59,5 @@ ISOBAR TW 前端自動化建置工具
 
 ``檔名``
 >一般圖檔：檔名  
->sprite圖檔：css selector-sprite_sprite檔名 ex. btn-sprite_misc  
->轉換成jpg：檔名_jpg
+>sprite 圖檔：css selector-sprite_sprite檔名 ex. btn-sprite_misc  
+>轉換成 jpg：檔名_jpg
