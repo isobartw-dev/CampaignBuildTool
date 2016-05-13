@@ -36,7 +36,8 @@ ISOBAR TW 前端自動化建置工具
 2. clone 此專案
 3. 設定 package.jaon 及 task/*.js
 >package.json - 修改 watch:image path  
->task - 修改 imagefolder output path
+>task - 修改 imagefolder output path 
+
 4. Sublime Text 執行 Init Build Tool
 [d51f406f]: https://nodejs.org/en/ "Node.js"
 [2502918c]: https://git-scm.com/ "git for Window"
