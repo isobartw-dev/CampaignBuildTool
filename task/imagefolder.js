@@ -1,62 +1,84 @@
 var images = require("images");
 var fs = require('fs');
 var path = require('path');
-var output = 'D:\\Data\\My documents\\Desktop\\Output\\';
-var pc_path = './images/';
-var mobile_path = './mobile/images/';
+var glob = require('glob');
+var sourcePath = 'D:\\Data\\My documents\\Desktop\\Output\\';
+var imgFolder = glob.sync('{images/,mobile/images/}', {matchBase:true});
+var unlinkFile;
 
-function sort(item, outputpath){
-	var item2 = !/mobile/.test(outputpath) ? item : item.split('mobile-')[1];
-	var is = fs.createReadStream(output + item);
-	var os = fs.createWriteStream(outputpath + item2);
-	is.pipe(os);
-	is.on('end',function() {
-		fs.unlink(output + item);
-		if(/sprite/.test(item2 )){
-			fs.renameSync(outputpath + item2 , outputpath +'sprite/' + item2);
+function goFolder(files, callback){
+	imgFolder.forEach(function(item, index, arr){
+		var mobileImg = files.filter(function(file){
+			return file.indexOf('mobile') > -1;
+		});
+		var pcImg = files.filter(function(file){
+			return file.indexOf('mobile') === -1;
+		});
+		var goPath = item;
+		var img = /mobile/.test(goPath) ? mobileImg : pcImg;
+		var i = 0;
+		function sort(img, goPath){
+			if(img.length > i){
+				var imgItem = img[i]
+				var outputItem = !/mobile/.test(goPath) ? /sprite/.test(imgItem) ? 'sprite/'+ imgItem : imgItem : /sprite/.test(imgItem) ?'sprite/'+ imgItem.split('mobile-')[1] : imgItem.split('mobile-')[1];
+				var is = fs.createReadStream(sourcePath + imgItem);
+				var os = fs.createWriteStream(goPath + outputItem);
+				is.pipe(os)
+				os.on('finish', function() {
+					if (img.length == i){
+						callback >> callback(sourcePath)
+					}
+					sort(img, goPath)
+				});
+				i++
+			}else if(img.length == 0){
+				return
+			}
 		};
-	});
+		sort(img, goPath)
+	})
 };
 
-function gofolder(files){
-	var mobile_img = files.filter(function(file){
-		return file.indexOf('mobile') > -1;
-	});
-	var pc_img = files.filter(function(file){
-		return file.indexOf('mobile') === -1;
-	});
-
-	pc_img.forEach(function(item, index, array){
-  		sort(item, pc_path);
-	});
-	mobile_img.forEach(function(item, index, array){
-		sort(item, mobile_path);
-	});
-};
-
-fs.readdir(output, (err, files) => {
+fs.readdir(sourcePath, (err, files) => {
  	if(!/_jpg/.test(files.toString())){
-		gofolder(files);
+		goFolder(files, function(sourcePath){
+			files.forEach(function(item){
+				fs.unlinkSync(sourcePath + item)
+			})
+			console.log("all images go to current folder");
+		});
 	}else{
 		var jpg = files.filter(function(file){
 			return file.indexOf('_jpg') > -1;
 		});
-		var png = files.filter(function(file){
+		var img = files.filter(function(file){
 			return file.indexOf('_jpg') === -1;
 		});
 
-		jpg.forEach(function(item, index, arr){
-			var jpg = item.replace('_jpg', '').slice(0, -4) +'.jpg';
-			images(output + item)
-				.save(output + jpg, {
-					quality : 100
+		var i = 0;
+		function convJpg(jpg, i){
+			if(jpg.length > i){
+				var item = jpg[i];
+				var convFile = item.replace('_jpg', '').slice(0, -4) +'.jpg';
+				images(sourcePath + item)
+					.save(sourcePath + convFile, {
+						quality : 100
+					});
+				img.push(convFile);
+				fs.unlink(sourcePath + item, function(){
+					console.log(convFile + ' saved');
+					convJpg(jpg, i)
 				});
-			png.push(jpg);
-			fs.unlinkSync(output + item);
-			console.log(jpg + ' saved');
-			if(index == arr.length-1){
-				gofolder(png);
-			};
-		});
+				i++
+			}else{
+				goFolder(img, function(sourcePath){
+					files.forEach(function(item){
+						fs.unlinkSync(sourcePath + item)
+					})
+					console.log("all images go to current folder");
+				});
+			}
+		};
+		convJpg(jpg, i)
 	};
 });
