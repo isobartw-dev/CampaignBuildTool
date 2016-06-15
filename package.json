@@ -1,7 +1,7 @@
 {
-	"name": "ISOBAR_TW-campaign_dev",
+	"name": "campaign build tool",
 	"version": "1.0.0",
-	"description": "ISOBAR TW frontend campaign build tools",
+	"description": "ISOBAR TW frontend campaign build tool",
 	"devDependencies": {
 		"autoprefixer": "latest",
 		"browser-sync": "^2.12.5",
@@ -30,8 +30,8 @@
 		"deploy:css": "node task/deploy-postcss.js",
 		"deploy:image": "node task/imagemin.js",
 		"deploy": "npm run deploy:css && npm run deploy:image",
-		"dev:ngrok": "node task/ngrok.js",
-		"dev:browsersync": "node task/browsersync.js"
+		"dev:sprite": "parallelshell \"watch:sprite\" \"node task/browsersync.js\"",
+		"dev": "parallelshell \"npm run watch\" \"node task/browsersync.js\""
 	},
 	"license": "ISC",
 	"repository": {

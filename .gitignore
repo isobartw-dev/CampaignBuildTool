@@ -8,3 +8,4 @@ mobile/
 *.html
 *.sublime-project
 *.sublime-workspace
+*.log

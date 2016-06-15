@@ -11,14 +11,14 @@ Campaign 專案開發前端自動化流程工具 [自動化流程 step by step](
 - Photoshop 輸出圖片自動歸檔至專案資料夾
 
 #### 開發
-- <del>瀏覽器 liveload、多平台測試</del>
+- 瀏覽器 liveload、多平台測試
 - 自動產出 sprite
 - 圖片壓縮
 - CSS 合併、最佳化、壓縮
 
 #### 使用 package
-* <del>browsersync</del>
-* <del>ngrok</del>
+* browsersync
+* ngrok
 * nodemon
 * postcss
 	- sprites
@@ -43,7 +43,9 @@ Campaign 專案開發前端自動化流程工具 [自動化流程 step by step](
 ``update package`` - 更新 package  
 ``watch`` - 圖片規檔、編譯 CSS 產生 sprite  
 ``watch:sprite`` - 和 watch 類似，用於修改  
-``deploy`` - commit 前檔案最佳化
+``dev`` - 開發、抓蟲模式(結合watch指令)  
+``dev:sprite`` - 開發、抓蟲模式(結合watch:sprite指令)  
+``deploy`` - commit 前檔案最佳化  
 
 ## 圖檔命名規則
 ```

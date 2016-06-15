@@ -4,7 +4,6 @@ var path = require('path');
 var glob = require('glob');
 var sourcePath = 'D:\\Data\\My documents\\Desktop\\Output\\';
 var imgFolder = glob.sync('{images/,mobile/images/}', {matchBase:true});
-var unlinkFile;
 
 function goFolder(files, callback){
 	imgFolder.forEach(function(item, index, arr){
@@ -29,6 +28,7 @@ function goFolder(files, callback){
 						callback >> callback(sourcePath)
 					}
 					sort(img, goPath)
+					console.log(imgItem +" is going to current folder");
 				});
 				i++
 			}else if(img.length == 0){
@@ -40,20 +40,16 @@ function goFolder(files, callback){
 };
 
 fs.readdir(sourcePath, (err, files) => {
- 	if(!/_jpg/.test(files.toString())){
-		goFolder(files, function(sourcePath){
-			files.forEach(function(item){
-				fs.unlinkSync(sourcePath + item)
-			})
-			console.log("all images go to current folder");
-		});
+	if (/_tmp/.test(files.toString())){
+		return this
 	}else{
 		var jpg = files.filter(function(file){
-			return file.indexOf('_jpg') > -1;
+			return file.indexOf('_jpg.') > -1;
 		});
 		var img = files.filter(function(file){
 			return file.indexOf('_jpg') === -1;
 		});
+		var unlink = img;
 
 		var i = 0;
 		function convJpg(jpg, i){
@@ -66,19 +62,18 @@ fs.readdir(sourcePath, (err, files) => {
 					});
 				img.push(convFile);
 				fs.unlink(sourcePath + item, function(){
-					console.log(convFile + ' saved');
 					convJpg(jpg, i)
-				});
+					console.log(convFile + ' convert');
+				})
 				i++
 			}else{
 				goFolder(img, function(sourcePath){
-					files.forEach(function(item){
+					unlink.forEach(function(item){
 						fs.unlinkSync(sourcePath + item)
 					})
-					console.log("all images go to current folder");
 				});
 			}
 		};
 		convJpg(jpg, i)
-	};
+	}
 });
