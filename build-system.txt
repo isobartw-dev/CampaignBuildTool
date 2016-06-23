@@ -15,6 +15,11 @@
 					"working_dir": "$file_path"
 				},
 				{
+					"name": "runIIS",
+					"shell_cmd": "runIIS",
+					"working_dir": "$file_path"
+				},
+				{
 					"name": "watch",
 					"shell_cmd": "npm run watch",
 					"working_dir": "$file_path"
@@ -49,6 +54,16 @@
 					"shell_cmd": "npm run deploy:image",
 					"working_dir": "$file_path"
 				},
+				{
+					"name": "dev",
+					"shell_cmd": "npm run dev",
+					"working_dir": "$file_path"
+				},
+				{
+					"name": "dev:sprite",
+					"shell_cmd": "npm run dev:sprite",
+					"working_dir": "$file_path"
+				}
 			]
 		}
 	],

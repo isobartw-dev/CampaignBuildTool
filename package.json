@@ -1,5 +1,5 @@
 {
-	"name": "campaign build tool",
+	"name": "CampaignBuildTool",
 	"version": "1.0.0",
 	"description": "ISOBAR TW frontend campaign build tool",
 	"devDependencies": {
@@ -22,9 +22,10 @@
 	"scripts": {
 		"build:folder": "md images\\sprite && md mobile\\images\\sprite",
 		"build:css": "copy css\\style.css css\\style-edit.css && copy mobile\\css\\style.css mobile\\css\\style-edit.css",
-		"prepublish": "parallelshell \"npm run build:folder\" \"npm run build:css\" \"node task/get-port.js\"",
+		"prepublish": "parallelshell \"npm run build:folder\" \"npm run build:css\"",
+		"runIIS": "runIIS.wsf",
 		"watch:sprite": "nodemon -q -w \"D:/Data/My documents/Desktop/Output/**/*\" -e png -i '*.jpg' --exec \"node task/imagefolder.js && node task/watch-postcss.js\"",
-		"watch:css": "nodemon -q -w /css/style_edit.css -C --exec node task/watch-postcss.js",
+		"watch:css": "nodemon -q -w /css/style-edit.css -C --exec node task/watch-postcss.js",
 		"watch:image": "nodemon -q -w \"D:/Data/My documents/Desktop/Output/**/*\" -e png -i '*.jpg' --exec node task/imagefolder.js",
 		"watch": "parallelshell \"npm run watch:image\" \"npm run watch:css\"",
 		"deploy:css": "node task/deploy-postcss.js",

@@ -12,7 +12,7 @@ linereader.on('line', function (line) {
 	if(/VWDPort/.test(line)){
 		var d = line.split('"')[1];
 		fs.writeFile('task/port.txt', d, (err) => {
-			console.log('get port')
+			console.log('成功獲取local port')
 		})
 		linereader.close();
 	}else{

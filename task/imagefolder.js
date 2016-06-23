@@ -44,7 +44,7 @@ fs.readdir(sourcePath, (err, files) => {
 		return this
 	}else{
 		var jpg = files.filter(function(file){
-			return file.indexOf('_jpg.') > -1;
+			return file.indexOf('_jpg') > -1;
 		});
 		var img = files.filter(function(file){
 			return file.indexOf('_jpg') === -1;
