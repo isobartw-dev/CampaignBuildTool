@@ -48,17 +48,17 @@ Campaign 專案開發前端自動化流程工具
 [2502918c]: https://git-scm.com/ "git for Window"
 [3]: https://github.com/isobartw-dev/InitBuildTool "InitBuildTool"
 
-## 指令
+### 指令
 ``install package`` - 安裝 package.json 專案需要的 package，並且產生自動化需要的檔案及資料夾  
 ``update package`` - 更新 package  
-``runIIS`` - 產生本機網站(localhost)
+``runIIS`` - 產生本機網站(localhost)  
 ``watch`` - 圖片規檔(watch:image)、編譯 CSS 產生 sprite(watch:css)  
 ``watch:sprite`` - 和 watch 類似，用於修改  
 ``dev`` - 開發、抓蟲模式(結合 watch 指令)  
 ``dev:sprite`` - 開發、抓蟲模式(結合 watch:sprite 指令)  
 ``deploy`` - commit 前圖檔(deploy:image)、CSS(deploy:css) 最佳化  
 
-## 圖檔命名規則
+### 圖檔命名規則
 ```
 版本-[檔名 | css selector-sprite_sprite檔名 | 檔名_jpg].*
 ```  
