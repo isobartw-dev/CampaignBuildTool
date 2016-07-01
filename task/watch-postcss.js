@@ -45,6 +45,10 @@ var optsSpritePc = {
 					var newItems = selector.split(',').length;
 					if(newItems > items && repeat > -1){
 						return arr.splice(index, 1, selector +'{background-image:url('+ img +');}\r\n')
+					}else if(newItems <= items && repeat > -1){
+						var defaultSelector = arr[index].split('{')[0];
+						var addSelector = selector.split(currselector)[1];
+						return arr.splice(index, 1, defaultSelector + addSelector +'{background-image:url('+ img +');}\r\n')
 					}else{
 						return arr
 					}
@@ -108,6 +112,10 @@ var optsSpriteMobile = {
 						var newItems = selector.split(',').length;
 						if(newItems > items && repeat > -1){
 							return arr.splice(index, 1, selector +'{background-image:url('+ img +');}\r\n')
+						}else if(newItems <= items && repeat > -1){
+							var defaultSelector = arr[index].split('{')[0];
+							var addSelector = selector.split(currselector)[1]
+							return arr.splice(index, 1, defaultSelector + addSelector +'{background-image:url('+ img +');}\r\n')
 						}else{
 							return arr
 						}
@@ -151,17 +159,19 @@ style.forEach(function(item, index, arr){
 		Processor
 		.process(css, {from: item, to: toPath +'style.css'})
 		.then(function (result) {
+			var resultStr = result.content;
+			var body = str.match(/body.{/g);
 			if(sort != 'mobile'){
-				result.css = result.content
-				.replace('body{', spriteMerge.join('') +'body{')
+				result.css = resultStr
+				.replace(/body.{/g, spriteMerge.join('') + body)
 			}else{
 				var sprite = mspriteMerge.join('');
 				sprite2 = '@media screen and (-webkit-min-device-pixel-ratio:2) {\r\n'+ sprite.replace(/.png/g, '@2x.png') +'}\r\n';
 				sprite3 = '@media screen and (-webkit-min-device-pixel-ratio:3) {\r\n'+ sprite.replace(/.png/g, '@3x.png') +'}\r\n';
 				sprite = sprite2.concat(sprite3)
 				mspriteMerge.push(sprite)
-				result.css = result.content
-				.replace('body{', mspriteMerge.join('') +'body{')
+				result.css = resultStr
+				.replace(/body.{/g, mspriteMerge.join('') + body)
 				.replace('@media screen and (-webkit-min-device-pixel-ratio:2) {\r\n}\r\n', '')
 				.replace('@media screen and (-webkit-min-device-pixel-ratio:3) {\r\n}\r\n', '')
 			}
