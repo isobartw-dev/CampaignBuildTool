@@ -4,7 +4,7 @@ var jpegrecompress = require('imagemin-jpeg-recompress');
 var fs = require('fs');
 var path = require('path');
 var glob = require('glob');
-var imgFolder = glob.sync('{images/, mobile/images/}', {matchBase:true});
+var imgFolder = glob.sync('{images/,mobile/images/}', {matchBase:true});
 var sprintf = require('tiny-sprintf');
 var png = [], jpg = [], gif = [], svg = [], pc = [], mobile = [], stringSize = 0, mobileSize = [], pcSize = [], mobileSaveSize, pcSaveSize;
 

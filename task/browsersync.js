@@ -19,12 +19,14 @@ function devUrl(getport){
 	browsersync({
 		proxy:'localhost:'+ getport,
 		files: '**',
+		port: 3001,
 		watchOptions: {
 		    ignoreInitial: true,
 		    ignored: 'style-edit.css'
 		},
 		socket: {
-		    domain: '192.168.123.1:3000'
+		    //domain: '192.168.123.1:3000' //mobile & 遠端測試用
+		    domain: 'localhost:3001'
 		},
 		open:false
 	});

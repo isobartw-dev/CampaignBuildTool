@@ -160,7 +160,7 @@ style.forEach(function(item, index, arr){
 		.process(css, {from: item, to: toPath +'style.css'})
 		.then(function (result) {
 			var resultStr = result.content;
-			var body = str.match(/body.{/g);
+			var body = resultStr.match(/body.{/g);
 			if(sort != 'mobile'){
 				result.css = resultStr
 				.replace(/body.{/g, spriteMerge.join('') + body)
