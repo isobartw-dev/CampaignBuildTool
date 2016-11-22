@@ -2,21 +2,22 @@ var images = require("images");
 var fs = require('fs');
 var path = require('path');
 var glob = require('glob');
-var sourcePath = 'D:\\Data\\My documents\\Desktop\\Output\\';
+var sourcePath = 'E:\\Snow.Huang\\My documents\\Desktop\\Output\\';
 var imgFolder = glob.sync('{images/,mobile/images/}', {matchBase:true});
 
 function goFolder(files, callback){
+	var mobileImg = files.filter(function(file){
+		return file.indexOf('mobile') > -1;
+	});
+	var pcImg = files.filter(function(file){
+		return file.indexOf('mobile') === -1;
+	});
 	imgFolder.forEach(function(item, index, arr){
-		var mobileImg = files.filter(function(file){
-			return file.indexOf('mobile') > -1;
-		});
-		var pcImg = files.filter(function(file){
-			return file.indexOf('mobile') === -1;
-		});
 		var goPath = item;
 		var img = /mobile/.test(goPath) ? mobileImg : pcImg;
 		var i = 0;
 		function sort(img, goPath){
+			// console.log(img.length, i);
 			if(img.length > i){
 				var imgItem = img[i]
 				var outputItem = !/mobile/.test(goPath) ? /sprite/.test(imgItem) ? 'sprite/'+ imgItem : imgItem : /sprite/.test(imgItem) ?'sprite/'+ imgItem.split('mobile-')[1] : imgItem.split('mobile-')[1];
@@ -24,13 +25,14 @@ function goFolder(files, callback){
 				var os = fs.createWriteStream(goPath + outputItem);
 				is.pipe(os)
 				os.on('finish', function() {
-					if (img.length == i){
-						callback >> callback(sourcePath)
+					++i
+					console.log(imgItem +" 已到正確的資料夾");
+					if(img.length == i){
+						callback >> callback(sourcePath);
+					}else{
+						sort(img, goPath)
 					}
-					sort(img, goPath)
-					console.log(imgItem +" is going to current folder");
 				});
-				i++
 			}else if(img.length == 0){
 				return
 			}
@@ -43,37 +45,53 @@ fs.readdir(sourcePath, (err, files) => {
 	if (/_tmp/.test(files.toString())){
 		return this
 	}else{
-		var jpg = files.filter(function(file){
+		var convFile = files.filter(function(file){
 			return file.indexOf('_jpg') > -1;
 		});
 		var img = files.filter(function(file){
 			return file.indexOf('_jpg') === -1;
 		});
-		var unlink = img;
 
 		var i = 0;
-		function convJpg(jpg, i){
-			if(jpg.length > i){
-				var item = jpg[i];
-				var convFile = item.replace('_jpg', '').slice(0, -4) +'.jpg';
-				images(sourcePath + item)
-					.save(sourcePath + convFile, {
-						quality : 100
-					});
-				img.push(convFile);
-				fs.unlink(sourcePath + item, function(){
-					convJpg(jpg, i)
-					console.log(convFile + ' convert');
+		function convert(file, i){
+			// console.log(files, i);
+			if(file.length > i){
+				var item = file[i];
+				var ext = item.indexOf('@') > -1 ?  item.slice(-10, -7) : item.slice(-7, -4);
+				var convFile = item.replace('_'+ ext, '').slice(0, -4) +'.'+ ext;
+				var data = images(sourcePath + item).encode(ext);
+				fs.writeFile(sourcePath + convFile, data, function(){
+					img.push(convFile);
+					console.log(item + ' 已轉檔為'+ ext);
+					fs.stat(sourcePath + item, function(err, stats){
+						if(err == null){
+							fs.unlinkSync(sourcePath + item);
+							convert(file, i);
+						}else{
+							convert(file, i)
+						}
+					})
 				})
 				i++
 			}else{
 				goFolder(img, function(sourcePath){
-					unlink.forEach(function(item){
-						fs.unlinkSync(sourcePath + item)
+					img.forEach(function(item){
+						fs.stat(sourcePath + item, function(err, stats){
+							if(err == null){
+								fs.unlinkSync(sourcePath + item);
+							}else{
+								console.log('電腦秀逗惹~等等他');
+							}
+						});
 					})
 				});
 			}
 		};
-		convJpg(jpg, i)
+		convert(convFile, i)
+	}
+});
+process.on('exit', (code) => {
+	if(code != 0){
+		console.log('有地方出錯! task已停止');
 	}
 });

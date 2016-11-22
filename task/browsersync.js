@@ -1,42 +1,46 @@
 var browsersync = require("browser-sync");
 var ngrok = require('ngrok');
+var devip = require('dev-ip');
 var fs = require('fs');
-var execPort = require('child_process').execFile;
+var log = require('./log');
+var port = log.get('port');
 
 function devUrl(getport){
-	ngrok.connect({
-		proto: 'http',
-		addr: getport,
-		host_header: 'localhost:'+ getport,
-		bind_tls: false
-	}, function (err, url) {
-		console.log('測試用公用網址');
-		console.log('[ngrok] '+ url);
-		console.log('[ngrok UI] http://127.0.0.1:4040/');
-		console.log(" --------------------------------------");
-		console.log('開發抓蟲用同網段網址');
-	});
+	// ngrok.connect({
+	// 	proto: 'http',
+	// 	addr: 'localhost:'+ getport,
+	// 	bind_tls: false
+	// }, function (err, url) {
+	// 	console.log('測試用公用網址');
+	// 	console.log('[ngrok] '+ url);
+	// 	console.log('[ngrok mobile] '+ url +'/mobile/index.aspx');
+	// 	console.log('[ngrok UI] http://127.0.0.1:4040/');
+	// 	console.log(" --------------------------------------");
+	// 	console.log('開發抓蟲用同網段網址');
+	// });
 	browsersync({
 		proxy:'localhost:'+ getport,
 		files: '**',
-		port: 3001,
+		port: 3000,
 		watchOptions: {
 		    ignoreInitial: true,
-		    ignored: 'style-edit.css'
+		    ignored: ['style-edit.css, node_modules, sass']
 		},
 		socket: {
-		    //domain: '192.168.123.1:3000' //mobile & 遠端測試用
-		    domain: 'localhost:3001'
+			// mobile & 遠端測試用
+			// domain: devip()[0] +'.xip.io:3000'
+			// 製作用
+		    // domain: 'localhost:3000'
 		},
-		open:false
-	});
+		tunnel: true,
+		xip: true,
+		open: false
+	})
 };
 
-execPort('node', ['task/get-port.js'], function(error, stdout, stderr) { 
- 	if(error){
- 		console.log(error);
- 	}
- 	console.log(stdout)
- 	var getport = fs.readFileSync('task/port.txt', 'utf-8');
- 	devUrl(getport)
+devUrl(port);
+process.on('exit', (code) => {
+	if(code != 0){
+		console.log('有地方出錯! task已停止');
+	}
 });

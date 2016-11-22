@@ -8,7 +8,8 @@ Campaign 專案開發前端自動化流程工具
 ## 功能
 #### 檔案結構
 - images/sprite
-- style-edit.css
+- css/sass(_*.css)
+- css/style-edit.css
 - Photoshop 輸出圖片自動歸檔至專案資料夾
 
 #### 開發
@@ -23,9 +24,10 @@ Campaign 專案開發前端自動化流程工具
 * nodemon
 * postcss
 	- sprites
-	- imagemin(pngquant+jpeg-recompress)
+	- imagemin(pngquant+jpeg-recompress+gifsicle+svgo)
 	- autoprefixer
 	- nano
+	- css-mqpacker
 
 ## 使用
 1. 請先安裝 [Node.js][d51f406f]、 [git for Window][2502918c]、[InitBuildTool][3]
@@ -34,9 +36,7 @@ Campaign 專案開發前端自動化流程工具
 
 	> package.json  
 	```
-	    "watch:sprite": "nodemon -q -w \"photoshop output 資料夾路徑 ex:D:\\xxx\\xx\\" ...
-	    ...
-	    "watch:image": "nodemon -q -w \"photoshop output 資料夾路徑 ex:D:\\xxx\\xx\\" ...
+	 "watch:image": "nodemon -q -w \"photoshop output 資料夾路徑 ex:D:\\xxx\\xx\\" ...
 	```
 	> task - imagefolder
 	```
@@ -48,19 +48,17 @@ Campaign 專案開發前端自動化流程工具
 [2502918c]: https://git-scm.com/ "git for Window"
 [3]: https://github.com/isobartw-dev/InitBuildTool "InitBuildTool"
 
-### 指令
-``install package`` - 安裝 package.json 專案需要的 package，並且產生自動化需要的檔案及資料夾  
-``update package`` - 更新 package  
-``runIIS`` - 產生本機網站(localhost)  
-``watch`` - 圖片規檔(watch:image)、編譯 CSS 產生 sprite(watch:css)  
-``watch:sprite`` - 和 watch 類似，用於修改  
-``dev`` - 開發、抓蟲模式(結合 watch 指令)  
-``dev:sprite`` - 開發、抓蟲模式(結合 watch:sprite 指令)  
-``deploy`` - commit 前圖檔(deploy:image)、CSS(deploy:css) 最佳化  
+#### 指令
+```install package``` - 安裝 package.json 專案需要的 package，並且產生自動化需要的檔案及資料夾  
+```update package``` - 更新 package  
+```runIIS``` - 產生本機網站(localhost)  
+```watch``` - 圖片規檔(watch:image)、編譯 CSS 產生 sprite(watch:css)  
+```dev``` - 開發、抓蟲模式(結合 watch 指令)  
+```deploy``` - commit 前圖檔(deploy:image)、CSS(deploy:css) 最佳化  
 
-### 圖檔命名規則
+#### 圖檔命名規則
 ```
-版本-[檔名 | css selector-sprite_sprite檔名 | 檔名_jpg].*
+版本-[檔名 | css selector-sprite_sprite檔名 | 檔名_jpg].副檔名	
 ```  
 ``
 版本
@@ -70,5 +68,5 @@ Campaign 專案開發前端自動化流程工具
 
 ``檔名``
 >一般圖檔：檔名  
->sprite 圖檔：css selector-sprite_sprite檔名 ex. btn-sprite_misc  
+>sprite 用圖檔：css selector-sprite_sprite檔名 ex. btn-sprite_misc  
 >轉換成 jpg：檔名_jpg
