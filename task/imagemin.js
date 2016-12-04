@@ -41,7 +41,7 @@ function optimizeCallbak(source, output, sort){
 	}
 };
 var minTime = log.get('image');
-log.writeTime();
+
 imgFolder.forEach(function(item, index, arr){
 	var sort = item.indexOf('mobile') > -1 ? 'mobile' : 'pc';
 	var input = item;
@@ -108,7 +108,7 @@ imgFolder.forEach(function(item, index, arr){
 		}
 	});
 });
-
+log.writeTime();
 process.on('exit', (code) => {
 	if(code == 0 && mobileSaveSize != 0 || code == 0 && pcSaveSize != 0){
 		mobileSize = mobileSize.length == 0 ? 0 : mobileSize.reduce(getSum);
