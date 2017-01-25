@@ -2,28 +2,19 @@ var images = require("images");
 var fs = require('fs');
 var path = require('path');
 var glob = require('glob');
-var sourcePath = 'E:\\Snow.Huang\\My documents\\Desktop\\Output\\';
-var imgFolder = glob.sync('{images/,mobile/images/}', {matchBase:true}).filter(function(files){
-	return files.match(/sprite/g);
-});
+var sourcePath = 'E:\\你的名字\\My documents\\Desktop\\Output\\';
+var imgFolder = glob.sync('{images/}', {matchBase:true});
 
 function goFolder(files, callback){
-	var mobileImg = files.filter(function(file){
-		return file.indexOf('mobile') > -1;
-	});
-	var pcImg = files.filter(function(file){
-		return file.indexOf('mobile') === -1;
-	});
+	var img = files;
 	imgFolder.forEach(function(item, index, arr){
 		var goPath = item;
-		var img = /mobile/.test(goPath) ? mobileImg : pcImg;
 		var i = 0;
 		function sort(img, goPath){
 			// console.log(img.length, i);
 			if(img.length > i){
-				var imgItem = img[i];
-				var folder = imgItem.match(/^-\w{1,}_$).slice(1,-2);
-				var outputItem = !/mobile/.test(goPath) ? /\_/.test(imgItem) ? folder+ '/'+ imgItem : imgItem : /\_/.test(imgItem) ? folder+ '/' + imgItem.split('mobile-')[1] : imgItem.split('mobile-')[1];
+				var imgItem = img[i]
+				var outputItem = /sprite/.test(imgItem) ? 'sprite/'+ imgItem : imgItem;
 				var is = fs.createReadStream(sourcePath + imgItem);
 				var os = fs.createWriteStream(goPath + outputItem);
 				is.pipe(os)

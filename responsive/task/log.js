@@ -1,15 +1,10 @@
 var fs = require('fs');
 var path = require('path');
 var rl = require('readline');
-var Registry = require('winreg'),
-	regKey = new Registry({                                       
-      hive: Registry.HKCU,                                        
-      key:  '\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\User Shell Folders'
-    });
 exports = module.exports = {};
 exports.writeTime = function(){
 	fs.stat('task/log.txt', function(err, stat) {
-		var endTime = String(new Date().toString()).slice(4, 21);
+		var endTime = String(new Date().toString()).slice(0, 21);
 		if(err == null){
 			var readLog = fs.readFileSync('task/log.txt').toString();
 			if(readLog){
@@ -118,29 +113,3 @@ exports.get = function(sort){
 		}
 	}
 };
-exports.setImgDir = function(){
-	var outPutDir,
-		file = [path.dirname(__dirname) + '/package.json', path.dirname(__dirname) + '/task/imagefolder.js'];
-	regKey.values(function (err, items) {
-		if (err){
-			console.log('ERROR: ' + err);
-	  	}else{
-	    	for (var i = 0; i < items.length; i++){
-				if(items[i].name == 'Desktop'){
-					outputDir = items[i].value;
-					file.forEach(function(item, index, arr){
-						var read = fs.readFileSync(item).toString(),
-							result;
-						if(item.indexOf('json') > -1){
-							 result = read.replace('desktop', outputDir.replace(/\\/g, '/') +'/Output/**/*');
-						}else{
-							result = read.replace('desktop', outputDir.replace(/\\/g, '\\\\')+'\\\\Output\\\\');
-						}
-						fs.writeFileSync(item, result, 'utf8');
-					});
-				}
-			}
-	  	}
-	});
-	console.log('Output資料夾位置設定完成')
-}
