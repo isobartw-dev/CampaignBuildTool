@@ -3,9 +3,7 @@ var fs = require('fs');
 var path = require('path');
 var glob = require('glob');
 var sourcePath = 'E:\\Snow.Huang\\My documents\\Desktop\\Output\\';
-var imgFolder = glob.sync('{images/,mobile/images/}', {matchBase:true}).filter(function(files){
-	return files.match(/sprite/g);
-});
+var imgFolder = glob.sync('{images/,mobile/images/}', {matchBase:true});
 
 function goFolder(files, callback){
 	var mobileImg = files.filter(function(file){
@@ -22,7 +20,7 @@ function goFolder(files, callback){
 			// console.log(img.length, i);
 			if(img.length > i){
 				var imgItem = img[i];
-				var folder = imgItem.match(/^-\w{1,}_$).slice(1,-2);
+				var folder = !imgItem.match(/\-\w{1,}\_/g) ? '' : imgItem.match(/\-\w{1,}\_/g)[0].slice(1,-1);
 				var outputItem = !/mobile/.test(goPath) ? /\_/.test(imgItem) ? folder+ '/'+ imgItem : imgItem : /\_/.test(imgItem) ? folder+ '/' + imgItem.split('mobile-')[1] : imgItem.split('mobile-')[1];
 				var is = fs.createReadStream(sourcePath + imgItem);
 				var os = fs.createWriteStream(goPath + outputItem);

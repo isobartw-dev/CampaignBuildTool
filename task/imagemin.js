@@ -58,7 +58,7 @@ imgFolder.forEach(function(item, index, arr){
 		imagemin([input+'*.{jpg,png,gif,svg}'], item, {
 		    plugins: [
 		        pngquant({quality:100-100}),
-		        jpegrecompress({quality:'height', method:'smallfry', min: 60, loops: 3}),
+		        jpegrecompress({quality:'veryhigh', method:'smallfry', min: 60, loops: 3}),
 		        gifsicle({interlaced: true, optimizationLevel: 3}),
 		        svgo({removeViewBox: false})
 		    ]
@@ -88,7 +88,7 @@ imgFolder.forEach(function(item, index, arr){
 				files = files.filter(function(file){
 					var time = String(fs.statSync(item+file).mtime).slice(4, 21);
 					// console.log(file, time, minTime, time > minTime);
-					return time > minTime && /(png|jpg|gif|svg)/g.test(file);
+					return Date.parse(time) > Date.parse(minTime) && /(png|jpg|gif|svg)/g.test(file);
 				});
 				files.forEach(function(file, index, arr){
 					fs.renameSync(item+file, input+file);
