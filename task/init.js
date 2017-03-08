@@ -44,14 +44,14 @@ function newItem(path, name, type){
 
 }
 
-// imgFolder.forEach(function(item, index, arr){
-// 	newItem(item, 'sprite', 'folder');
-// })
+imgFolder.forEach(function(item, index, arr){
+	newItem(item, 'sprite', 'folder');
+})
 
-// cssFolder.forEach(function(item, index, arr){
-// 	newItem(item, cssNew['dir'], 'folder');
-// 	newItem(item, cssNew['copy'], 'copy');
-// })
+cssFolder.forEach(function(item, index, arr){
+	newItem(item, cssNew['dir'], 'folder');
+	newItem(item, cssNew['copy'], 'copy');
+})
 
-// log.writeTime();
+log.writeTime();
 log.setImgDir();

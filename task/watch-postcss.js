@@ -1,25 +1,25 @@
+var today = String(new Date().toString()).slice(4, 24);
 var postcss = require('postcss');
 var scss = require('postcss-scss');
 var preCss = require('precss');
 var autoPrefixer = require('autoprefixer');
-var sprite = require('postcss-sprites').default;
+var sprite = require('postcss-sprites');
 var fs = require('fs');
 var path = require('path');
 var glob = require('glob');
 var style = glob.sync('{css/style-edit.css,mobile/css/style-edit.css}', {matchBase:true});
-var spriteMerge = [], mspriteMerge = [], selector, currselector, img;
+var spriteMerge = [], mspriteMerge = [], selector, currselector, img, group, groups = [];
 var optsPrefixer = {browsers: ['last 1 versions', 'ie 8-10']};
 var optsSpritePc = {
 	stylesheetPath: './css',
 	spritePath: './images/',
 	basePath: './css',
-	relativeTo: 'rule',
 	groupBy: function(image) {
-		var groups = image.url.split('_')[1].toString().slice(0, -4);
-		if (image.url.indexOf(groups) === -1) {
+		group = image.url.split('_')[1].toString().slice(0, -4);
+		if (image.url.indexOf(group) === -1) {
 			return Promise.reject();
 		}
-		return Promise.resolve(groups);
+		return Promise.resolve(group);
 	},
 	filterBy: function(image){
 		if(!/sprite/.test(image.url)){
@@ -29,7 +29,7 @@ var optsSpritePc = {
 	},
 	hooks: {
 		onUpdateRule: function(rule, token, image) {
-			selector = image.groups.toString();
+			selector = image.groups[1];
 			img = image.spriteUrl;
 			var backgroundPositionX = image.coords.x == 0 ? 0 : '-'+ image.coords.x;
 			var backgroundPositionY = image.coords.y == 0 ? 0 : '-'+ image.coords.y;
@@ -41,9 +41,10 @@ var optsSpritePc = {
 			rule.append(backgroundPosition)
 			mergeSelector(rule);
 		},
-		onSaveSpritesheet: function(opts, groups) {
-			groups.push('png');
-			return path.join(opts.spritePath, groups.join('.'));
+		onSaveSpritesheet: function(opts, spritesheet) {
+			groups.push(spritesheet.groups);
+			var fileName = spritesheet.groups.concat(spritesheet.extension);
+			return path.join(opts.spritePath, fileName.join('.'));
 		}
 	},
 	spritesmith:{
@@ -52,15 +53,14 @@ var optsSpritePc = {
 };
 var optsSpriteMobile = {
 	stylesheetPath: './mobile/css',
-	spritePath: './mobile/images/',
-	basePath: './mobile/css',
-	relativeTo: 'rule',
+	spritePath: './mobile/images',
+	basePath: './mobile',
 	groupBy: function(image) {
-		var groups = image.url.split('_')[1].toString().slice(0, -4);
-		if (image.url.indexOf(groups) === -1) {
+		group = image.url.split('_')[1].toString().slice(0, -4);
+		if (image.url.indexOf(group) === -1) {
 			return Promise.reject();
 		}
-		return Promise.resolve(groups);
+		return Promise.resolve(group);
 	},
 	filterBy: function(image){
 		if(!/sprite/.test(image.url)){
@@ -70,9 +70,8 @@ var optsSpriteMobile = {
 	},
 	hooks: {
 		onUpdateRule: function(rule, token, image) {
-			selector = image.groups.toString();
+			selector = image.groups[1];
 			img = image.spriteUrl;
-			// console.log(image);
 			var backgroundSizeX = (image.spriteWidth / image.coords.width) * 100;
 			var backgroundSizeY = (image.spriteHeight / image.coords.height) * 100;
 			var backgroundPositionX = (image.coords.x / (image.spriteWidth - image.coords.width)) * 100;
@@ -106,9 +105,10 @@ var optsSpriteMobile = {
 				rule.insertAfter(backgroundSize, backgroundRepeat);
 			}
 		},
-		onSaveSpritesheet: function(opts, groups) {
-			groups.push('png');
-			return path.join(opts.spritePath, groups.join('.'));
+		onSaveSpritesheet: function(opts, spritesheet) {
+			groups.push(spritesheet.groups);
+			var fileName = spritesheet.groups.concat(spritesheet.extension);
+			return path.join(opts.spritePath, fileName.join('.'));
 		}
 	},
 	spritesmith:{
@@ -136,45 +136,55 @@ function mergeSelector(rule){
 	}
 }
 style.forEach(function(item, index, arr){
-	var today = String(new Date().toString()).slice(4, 21);
 	var imgFolder = /mobile/.test(item) ? 'mobile/images/sprite' : 'images/sprite';
 	var imgChange =  String(fs.statSync(imgFolder).ctime).slice(4, 21);
 	var css = fs.readFileSync(item);
 	var goPath = item.slice(0, -14)
 	var optsMap = {inline: false, sourcesContent:false};
 	var optsSprite = /mobile/.test(item) ? optsSpriteMobile : optsSpritePc;
-	var Processor = postcss([autoPrefixer(optsPrefixer), sprite(optsSprite), preCss()]);
+	var Processor = postcss([preCss(), autoPrefixer(optsPrefixer)]);
+	var ProcessorSprite = postcss([sprite(optsSprite)]);
 	var sort = /mobile/.test(item) ? 'mobile': 'pc';
 	var sprite2, sprite3;
 	var cssFiles = glob.sync('./{'+ goPath +','+ goPath +'/sass}/*.css', {matchBase:true, ignore: ['./'+ goPath +'style.css']});
 	var cssChange = cssFiles.some(function(item){
-		return today == String(fs.statSync(item).mtime).slice(4, 21);
+		// console.log(sort, today, String(fs.statSync(item).mtime).slice(4, 24));
+		return today == String(fs.statSync(item).mtime).slice(4, 24);
 	});
-	if(cssChange || today == imgChange){
-		console.log(sort +' 產出sprite中...');
+	
+	if(cssChange){
+		console.log(sort +' 產出 style 中...');
 		Processor
 		.process(css, {parser: scss, from: item, to: goPath +'style.css', map: optsMap})
 		.then(function (result) {
-			var resultStr = result.content;
-			if(sort != 'mobile'){
-				result.css = resultStr
-				.concat('\r'+ spriteMerge.join(''))
-				.replace(/(\.\.\/)+/g, '../');
-			}else{
-				var sprite = spriteMerge.join('');
-				sprite2 = '@media screen and (-webkit-min-device-pixel-ratio:2) {\r\n'+ sprite.replace(/\.png$/ig, '@2x.png') +'}\r\n';
-				sprite3 = '@media screen and (-webkit-min-device-pixel-ratio:3) {\r\n'+ sprite.replace(/\.png$/ig, '@3x.png') +'}\r\n';
-				sprite = sprite2.concat(sprite3)
-				spriteMerge.push(sprite)
-				result.css = resultStr
-				.concat('\r'+ spriteMerge.join(''))
-				.replace(/@media screen and \(-webkit-min-device-pixel-ratio:\d\)(.)??\{}/g, '')
-				.replace(/(\.\.\/)+/g, '../')
-			}
-
-			fs.writeFileSync(goPath +'style.css', result.css);
+			result.css = result.content
+			.replace(/(\.\.\/)+/g, '../');
+			fs.writeFile(goPath +'style.css', result.css, function(){
+				css = fs.readFileSync(goPath +'style.css');
+				ProcessorSprite
+				.process(css, {from: goPath +'style.css', to: goPath +'style.css'})
+				.then(function (result) {
+					var resultStr = result.content;
+					if(sort != 'mobile'){
+						result.css = resultStr
+						.concat('\r'+ spriteMerge.join(''))
+						.replace(/(\.\.\/)+/g, '../');
+					}else{
+						var sprite = spriteMerge.join('');
+						sprite2 = '@media screen and (-webkit-min-device-pixel-ratio:2) {\r\n'+ sprite.replace(/\.png$/ig, '@2x.png') +'}\r\n';
+						sprite3 = '@media screen and (-webkit-min-device-pixel-ratio:3) {\r\n'+ sprite.replace(/\.png$/ig, '@3x.png') +'}\r\n';
+						sprite = sprite2.concat(sprite3);
+						spriteMerge.push(sprite);
+						result.css = resultStr
+						.concat('\r'+ spriteMerge.join(''))
+						.replace(/@media screen and \(-webkit-min-device-pixel-ratio:\d\)(.)??\{}/g, '')
+						.replace(/(\.\.\/)+/g, '../')
+					};
+					fs.writeFileSync(goPath +'style.css', result.css);
+					groups.length > 0 ? console.log('< '+ groups.length +' 張 sprite 產出完成! 等待 CSS 存檔後再啟動... >') : console.log('< style 產出完成! 等待 CSS 存檔後再啟動... >');
+				});
+			});
 			fs.writeFileSync(goPath +'style.css.map', result.map);
-			console.log('< sprite產出完成! 等待CSS存檔後再啟動... >');
 		});
 	}
 });

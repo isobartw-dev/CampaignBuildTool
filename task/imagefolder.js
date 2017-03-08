@@ -24,27 +24,27 @@ function goFolder(files, callback){
 				var outputItem = !/mobile/.test(goPath) ? /\_/.test(imgItem) ? folder+ '/'+ imgItem : imgItem : /\_/.test(imgItem) ? folder+ '/' + imgItem.split('mobile-')[1] : imgItem.split('mobile-')[1];
 				var is = fs.createReadStream(sourcePath + imgItem);
 				var os = fs.createWriteStream(goPath + outputItem);
-				is.pipe(os)
+				is.pipe(os);
 				os.on('finish', function() {
-					++i
+					++i;
 					console.log(imgItem +" 已到正確的資料夾");
 					if(img.length == i){
 						callback >> callback(sourcePath);
 					}else{
-						sort(img, goPath)
-					}
+						sort(img, goPath);
+					};
 				});
 			}else if(img.length == 0){
-				return
-			}
+				return;
+			};
 		};
-		sort(img, goPath)
-	})
+		sort(img, goPath);
+	});
 };
 
 fs.readdir(sourcePath, (err, files) => {
 	if (/_tmp/.test(files.toString())){
-		return this
+		return this;
 	}else{
 		var convFile = files.filter(function(file){
 			return file.indexOf('_jpg') > -1;
@@ -67,13 +67,11 @@ fs.readdir(sourcePath, (err, files) => {
 					fs.stat(sourcePath + item, function(err, stats){
 						if(err == null){
 							fs.unlinkSync(sourcePath + item);
-							convert(file, i);
-						}else{
-							convert(file, i)
-						}
-					})
-				})
-				i++
+						};
+						convert(file, i);
+					});
+				});
+				i++;
 			}else{
 				goFolder(img, function(sourcePath){
 					img.forEach(function(item){
@@ -82,17 +80,17 @@ fs.readdir(sourcePath, (err, files) => {
 								fs.unlinkSync(sourcePath + item);
 							}else{
 								console.log('電腦秀逗惹~等等他');
-							}
+							};
 						});
-					})
+					});
 				});
-			}
+			};
 		};
-		convert(convFile, i)
-	}
+		convert(convFile, i);
+	};
 });
 process.on('exit', (code) => {
 	if(code != 0){
 		console.log('有地方出錯! task已停止');
-	}
+	};
 });
