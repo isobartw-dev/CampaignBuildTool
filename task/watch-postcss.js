@@ -118,14 +118,15 @@ var optsSpriteMobile = {
 function mergeSelector(rule){
 	currselector = selector;
 	selector = '.'+ currselector + (/(:after|:before)/.test(rule.selector) ? ', '+ rule.selector : '');
-	if(spriteMerge.toString().indexOf(currselector) > -1){
+	// console.log(spriteMerge, currselector);
+	if(spriteMerge.toString().indexOf(currselector +'.png') > -1){
 		spriteMerge.filter(function(sprite, index, arr){
-			var repeat = sprite.indexOf('.'+ currselector);
+			var repeat = sprite.split(',')[0].indexOf('.'+ currselector);
 			var items = arr.slice(repeat, repeat+1).toString().split(',').length;
 			var newItems = selector.split(',').length;
 			if(repeat > -1){
 				var defaultSelector = arr[index].split('{')[0];
-				var addSelector = selector.split('.'+ currselector +', ')[1]== undefined ? '' : ', '+ selector.split('.'+ currselector+ ', ')[1];
+				var addSelector = selector.split('.'+ currselector +', ')[1] == undefined ? '' : ', '+ selector.split('.'+ currselector+ ', ')[1];
 				return arr.splice(index, 1, defaultSelector + addSelector +'{background-image:url('+ img +');}\r\n')
 			}else{
 				return arr
