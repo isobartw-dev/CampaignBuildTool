@@ -14,6 +14,7 @@ var optsSpritePc = {
 	stylesheetPath: './css',
 	spritePath: './images/',
 	basePath: './css',
+	relativeTo: 'rule',
 	groupBy: function(image) {
 		group = image.url.split('_')[1].toString().slice(0, -4);
 		if (image.url.indexOf(group) === -1) {
@@ -55,6 +56,7 @@ var optsSpriteMobile = {
 	stylesheetPath: './mobile/css',
 	spritePath: './mobile/images',
 	basePath: './mobile',
+	relativeTo: 'rule',
 	groupBy: function(image) {
 		group = image.url.split('_')[1].toString().slice(0, -4);
 		if (image.url.indexOf(group) === -1) {
@@ -168,18 +170,16 @@ style.forEach(function(item, index, arr){
 					var resultStr = result.content;
 					if(sort != 'mobile'){
 						result.css = resultStr
-						.concat('\r'+ spriteMerge.join(''))
-						.replace(/(\.\.\/)+/g, '../');
+						.concat('\r'+ spriteMerge.join(''));
 					}else{
 						var sprite = spriteMerge.join('');
-						sprite2 = '@media screen and (-webkit-min-device-pixel-ratio:2) {\r\n'+ sprite.replace(/\.png$/ig, '@2x.png') +'}\r\n';
-						sprite3 = '@media screen and (-webkit-min-device-pixel-ratio:3) {\r\n'+ sprite.replace(/\.png$/ig, '@3x.png') +'}\r\n';
+						sprite2 = '@media screen and (-webkit-min-device-pixel-ratio:2) {\r\n'+ sprite.replace(/\.png/ig, '@2x.png') +'}\r\n';
+						sprite3 = '@media screen and (-webkit-min-device-pixel-ratio:3) {\r\n'+ sprite.replace(/\.png/ig, '@3x.png') +'}\r\n';
 						sprite = sprite2.concat(sprite3);
 						spriteMerge.push(sprite);
 						result.css = resultStr
 						.concat('\r'+ spriteMerge.join(''))
-						.replace(/@media screen and \(-webkit-min-device-pixel-ratio:\d\)(.)??\{}/g, '')
-						.replace(/(\.\.\/)+/g, '../')
+						.replace(/@media screen and \(-webkit-min-device-pixel-ratio:\d\)(.)??\{}/g, '');
 					};
 					fs.writeFileSync(goPath +'style.css', result.css);
 					groups.length > 0 ? console.log('< '+ groups.length +' 張 sprite 產出完成! 等待 CSS 存檔後再啟動... >') : console.log('< style 產出完成! 等待 CSS 存檔後再啟動... >');
