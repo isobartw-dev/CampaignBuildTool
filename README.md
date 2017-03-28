@@ -33,7 +33,8 @@ Campaign 專案開發前端自動化流程工具
 ## 使用
 1. 請先安裝 [Node.js][d51f406f]、 [git for Window][2502918c]、[InitBuildTool][3]
 2. clone 此工具包或 git pull 更新工具包
-3. Sublime Text 執行 InitBuildTool  
+3. Sublime Text 執行 InitBuildTool
+
 [d51f406f]: https://nodejs.org/en/ "Node.js"
 [2502918c]: https://git-scm.com/ "git for Window"
 [3]: https://github.com/isobartw-dev/InitBuildTool "InitBuildTool"
