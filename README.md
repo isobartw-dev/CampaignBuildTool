@@ -49,7 +49,7 @@ Campaign 專案開發前端自動化流程工具
 
 #### 圖檔命名規則
 ```
-版本-[檔名 | css selector-sprite_sprite檔名 | 檔名_jpg].副檔名	
+版本-[檔名 | 檔名-資料夾名稱_ | css selector-sprite_sprite檔名 | 檔名_jpg].副檔名	
 ```  
 ``
 版本
@@ -59,5 +59,6 @@ Campaign 專案開發前端自動化流程工具
 
 ``檔名``
 >一般圖檔：檔名  
+>images 中的資料夾圖檔：檔名-資料夾名稱_  
 >sprite 用圖檔：css selector-sprite_sprite檔名 ex. btn-sprite_misc  
 >轉換成 jpg：檔名_jpg
