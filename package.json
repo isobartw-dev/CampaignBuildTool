@@ -31,7 +31,7 @@
 		"prepublish": "node task/init.js",
 		"runIIS": "node task/runIIS.js",
 		"watch:css": "nodemon -q -w css -w sass -w mobile/css -w mobile/** -e css -i **/css/style.css -C --exec node task/watch-postcss.js --no-update-notifier",
-		"watch:image": "nodemon -q -w \"E:/Snow.Huang/My documents/Desktop/Output/**/*\" -e png -i '*.jpg' --exec node task/imagefolder.js --no-update-notifier",
+		"watch:image": "nodemon -q -w \"desktop\" -e png -i '*.jpg' --exec node task/imagefolder.js --no-update-notifier",
 		"watch": "parallelshell \"npm run watch:image\" \"npm run watch:css\"",
 		"deploy:css": "node task/deploy-postcss.js",
 		"deploy:image": "node task/imagemin.js",
