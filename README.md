@@ -10,40 +10,30 @@ Campaign 專案開發前端自動化流程工具
 - images/sprite
 - css/sass(_*.css)
 - css/style-edit.css
-- Photoshop 輸出圖片自動歸檔至專案資料夾
 
 #### 開發
 - 瀏覽器 liveload、多平台測試
 - 自動產出 sprite
 - 圖片壓縮
 - CSS 合併、最佳化、壓縮
+- Photoshop 輸出圖片自動歸檔至專案資料夾
 
 #### 使用 package
 * browsersync
 * ngrok
-* nodemon
+* onchange
 * postcss
 	- sprites
 	- imagemin(pngquant+jpeg-recompress+gifsicle+svgo)
 	- autoprefixer
 	- nano
+	- clean
 	- css-mqpacker
 
 ## 使用
 1. 請先安裝 [Node.js][d51f406f]、 [git for Window][2502918c]、[InitBuildTool][3]
 2. clone 此工具包或 git pull 更新工具包
-3. 設定 package.json 及 task/*.js(使用 InitBuildTool 更新後也請記得修改)
-
-	> package.json  
-	```
-	 "watch:image": "nodemon -q -w \"photoshop output 資料夾路徑 ex:D:\\xxx\\xx\\" ...
-	```
-	> task - imagefolder
-	```
-	 var output = 'photoshop output 資料夾路徑 ex:D:\\xxx\\xx\\'
-	```
-	
-4. Sublime Text 執行 InitBuildTool
+3. Sublime Text 執行 InitBuildTool
 [d51f406f]: https://nodejs.org/en/ "Node.js"
 [2502918c]: https://git-scm.com/ "git for Window"
 [3]: https://github.com/isobartw-dev/InitBuildTool "InitBuildTool"
