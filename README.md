@@ -5,11 +5,19 @@ Campaign 專案開發前端自動化流程工具
 此版本為 Campaign 開發用，其他專案類型需視狀況調整 package.json 及 task  
 有任何問題請用 issues 提出或是 pull resuest
 
+##注意
+- 請升級至 Node Ver.8 以上
+- v2.0 更新項目
+    - 使用 node-sass 取代 precss
+    - 增加 source-map 放置 map 檔案
+    - dev 指令可自動偵測IIS是否啟動
+
 ## 功能
 #### 檔案結構
 - images/sprite
 - css/sass(_*.css)
 - css/style-edit.css
+- source-map/**
 
 #### 開發
 - 瀏覽器 liveload、多平台測試
@@ -23,6 +31,7 @@ Campaign 專案開發前端自動化流程工具
 * ngrok
 * onchange
 * postcss
+    - node-sass
 	- sprites
 	- imagemin(pngquant+jpeg-recompress+gifsicle+svgo)
 	- autoprefixer
@@ -49,7 +58,7 @@ Campaign 專案開發前端自動化流程工具
 
 #### 圖檔命名規則
 ```
-版本-[檔名 | 檔名-資料夾名稱_ | css selector-sprite_sprite檔名 | 檔名_jpg].副檔名	
+版本-[檔名 | 檔名-資料夾名稱_ | css selector-sprite_sprite檔名 | 檔名_jpg].副檔名 
 ```  
 ``
 版本

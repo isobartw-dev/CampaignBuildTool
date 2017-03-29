@@ -23,7 +23,7 @@
 		"precss": "2.0.0",
 		"postcss-scss": "1.0.3",
 		"tiny-sprintf": "latest",
-		"dev-ip": "1.0.1"
+		"dev-ip": "1.0.1",
 		"winreg": "1.2.2"
 	},
 	"scripts": {
