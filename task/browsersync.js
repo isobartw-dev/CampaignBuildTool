@@ -21,11 +21,24 @@ function devUrl(getport){
 	});
 	browsersync({
 		proxy:'localhost:'+ getport,
-		files: '**',
 		port: 3000,
+		files:[
+			'./css/style.css',
+			'./js',
+			'*.aspx.js',
+			'*.aspx'
+		],
 		watchOptions: {
 			ignoreInitial: true,
-			ignored: ['style-edit.css, node_modules, sass']
+			ignored: [
+				'task',
+				'node_modules',
+				'images',
+				'**/sass',
+				'**/sprite',
+				'*.map.css',
+				'style-edit.css'
+			],
 		},
 		socket: {
 			// mobile & 遠端測試用

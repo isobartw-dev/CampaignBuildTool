@@ -2,7 +2,7 @@ var images = require("images");
 var fs = require('fs');
 var path = require('path');
 var glob = require('glob');
-var sourcePath = 'desktop';
+var sourcePath = 'E:\\Snow.Huang\\My documents\\Desktop\\Output\\';
 var imgFolder = glob.sync('{images/,mobile/images/}', {matchBase:true});
 
 function goFolder(files, callback){
@@ -19,9 +19,15 @@ function goFolder(files, callback){
 		function sort(img, goPath){
 			// console.log(img.length, i);
 			if(img.length > i){
-				var imgItem = img[i];
+				var imgItem = /mobile/.test(img[i]) ? img[i].split('mobile-')[1] : img[i];
 				var folder = !imgItem.match(/\-\w{1,}\_/g) ? '' : imgItem.match(/\-\w{1,}\_/g)[0].slice(1,-1);
-				var outputItem = !/mobile/.test(goPath) ? /\_/.test(imgItem) ? folder+ '/'+ imgItem : imgItem : /\_/.test(imgItem) ? folder+ '/' + imgItem.split('mobile-')[1] : imgItem.split('mobile-')[1];
+				if(folder && /sprite/.test(folder)){
+					var outputItem = folder+ '/'+ imgItem;
+				}else if(folder){
+					var outputItem = folder+ '/'+ imgItem.replace('-'+ folder +'_', '');
+				}else{
+					var outputItem = imgItem;
+				}	
 				var is = fs.createReadStream(sourcePath + imgItem);
 				var os = fs.createWriteStream(goPath + outputItem);
 				is.pipe(os);
