@@ -19,14 +19,14 @@ function goFolder(files, callback){
 		function sort(img, goPath){
 			// console.log(img.length, i);
 			if(img.length > i){
-				var imgItem = /mobile/.test(img[i]) ? img[i].split('mobile-')[1] : img[i];
+				var imgItem = img[i];
 				var folder = !imgItem.match(/\-\w{1,}\_/g) ? '' : imgItem.match(/\-\w{1,}\_/g)[0].slice(1,-1);
 				if(folder && /sprite/.test(folder)){
-					var outputItem = folder+ '/'+ imgItem;
+					var outputItem = folder+ '/'+ /mobile/.test(imgItem) ? imgItem.split('mobile-')[1] : imgItem;
 				}else if(folder){
-					var outputItem = folder+ '/'+ imgItem.replace('-'+ folder +'_', '');
+					var outputItem = folder+ '/'+ /mobile/.test(imgItem) ? imgItem.split('mobile-')[1].replace('-'+ folder +'_', '') : imgItem.replace('-'+ folder +'_', '');
 				}else{
-					var outputItem = imgItem;
+					var outputItem = /mobile/.test(imgItem) ? imgItem.split('mobile-')[1] : imgItem;
 				}	
 				var is = fs.createReadStream(sourcePath + imgItem);
 				var os = fs.createWriteStream(goPath + outputItem);
