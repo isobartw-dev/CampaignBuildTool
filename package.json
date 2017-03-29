@@ -31,7 +31,7 @@
 		"prepublish": "node task/init.js",
 		"runIIS": "node task/runIIS.js",
 		"watch:css": "onchange css/**/*.css mobile/css/**/*.css -e **/css/style.css -- node task/watch-postcss.js",
-		"watch:image": "onchange \"E:/Snow.Huang/My documents/Desktop/Output/**/*\" -e *.jpg -- node task/imagefolder.js",
+		"watch:image": "onchange \"desktop\" -e *.jpg -- node task/imagefolder.js",
 		"watch": "parallelshell \"npm run watch:image\" \"npm run watch:css\"",
 		"deploy:css": "node task/deploy-postcss.js",
 		"deploy:image": "node task/imagemin.js",
