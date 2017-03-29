@@ -40,11 +40,6 @@
 					"working_dir": "${file_path:${folders}}"
 				},
 				{
-					"name": "watch:sprite",
-					"shell_cmd": "npm run watch:sprite",
-					"working_dir": "${file_path:${folders}}"
-				},
-				{
 					"name": "deploy",
 					"shell_cmd": "npm run deploy",
 					"working_dir": "${file_path:${folders}}"
