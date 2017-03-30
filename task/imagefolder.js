@@ -22,9 +22,9 @@ function goFolder(files, callback){
 				var imgItem = img[i];
 				var folder = !imgItem.match(/\-\w{1,}\_/g) ? '' : imgItem.match(/\-\w{1,}\_/g)[0].slice(1,-1);
 				if(folder && /sprite/.test(folder)){
-					var outputItem = folder+ '/'+ /mobile/.test(imgItem) ? imgItem.split('mobile-')[1] : imgItem;
+					var outputItem = folder+ '/'+ (/mobile/.test(imgItem) ? imgItem.split('mobile-')[1] : imgItem);
 				}else if(folder){
-					var outputItem = folder+ '/'+ /mobile/.test(imgItem) ? imgItem.split('mobile-')[1].replace('-'+ folder +'_', '') : imgItem.replace('-'+ folder +'_', '');
+					var outputItem = folder+ '/'+ (/mobile/.test(imgItem) ? imgItem.split('mobile-')[1].replace('-'+ folder +'_', '') : imgItem.replace('-'+ folder +'_', ''));
 				}else{
 					var outputItem = /mobile/.test(imgItem) ? imgItem.split('mobile-')[1] : imgItem;
 				}	
