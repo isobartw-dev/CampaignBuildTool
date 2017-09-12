@@ -1,6 +1,7 @@
 var fs = require('fs');
 var path = require('path');
 var rl = require('readline');
+var process = require('process');
 var Registry = require('winreg'),
 	regKey = new Registry({                                       
       hive: Registry.HKCU,                                        
@@ -127,7 +128,7 @@ exports.setImgDir = function(){
 	  	}else{
 	    	for (var i = 0; i < items.length; i++){
 				if(items[i].name == 'Desktop'){
-					outputDir = items[i].value;
+					outputDir = items[i].value.indexOf('%USERPROFILE%') > -1 ? process.env.USERPROFILE +'\\desktop' : items[i].value;;
 					file.forEach(function(item, index, arr){
 						var read = fs.readFileSync(item).toString(),
 							result;

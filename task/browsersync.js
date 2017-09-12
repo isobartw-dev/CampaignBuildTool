@@ -22,22 +22,17 @@ function devUrl(getport){
 	browsersync({
 		proxy:'localhost:'+ getport,
 		port: 3000,
-		files:[
-			'./css/style.css',
-			'./js',
-			'*.aspx.js',
-			'*.aspx'
-		],
+		files: '**',
 		watchOptions: {
 			ignoreInitial: true,
 			ignored: [
 				'task',
 				'node_modules',
-				'images',
+				'**/images',
 				'**/sass',
 				'**/sprite',
-				'*.map.css',
-				'style-edit.css'
+				'**/*.css.map',
+				'**/style-edit.css'
 			],
 		},
 		socket: {
