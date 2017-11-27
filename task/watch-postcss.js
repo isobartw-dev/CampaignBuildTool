@@ -117,6 +117,9 @@ var optsSpriteMobile = {
 		padding: 2
 	}
 };
+var optsPrecss ={
+
+}
 function mergeSelector(rule){
 	currselector = selector;
 	selector = '.'+ currselector + (/(:after|:before)/.test(rule.selector) ? ', '+ rule.selector : '');
@@ -145,7 +148,7 @@ style.forEach(function(item, index, arr){
 	var goPath = item.slice(0, -14)
 	var optsMap = {inline: false, sourcesContent:false};
 	var optsSprite = /mobile/.test(item) ? optsSpriteMobile : optsSpritePc;
-	var Processor = postcss([preCss(), autoPrefixer(optsPrefixer)]);
+	var Processor = postcss([preCss(optsPrecss), autoPrefixer(optsPrefixer)]);
 	var ProcessorSprite = postcss([sprite(optsSprite)]);
 	var sort = /mobile/.test(item) ? 'mobile': 'pc';
 	var sprite2, sprite3;
@@ -158,14 +161,14 @@ style.forEach(function(item, index, arr){
 	if(cssChange){
 		console.log(sort +' 產出 style 中...');
 		Processor
-		.process(css, {parser: scss, from: item, to: goPath +'style.css', map: optsMap})
+		.process(css, {parser: scss, from: item, to: goPath +'style.css'})
 		.then(function (result) {
 			result.css = result.content
 			.replace(/(\.\.\/)+/g, '../');
 			fs.writeFile(goPath +'style.css', result.css, function(){
 				css = fs.readFileSync(goPath +'style.css');
 				ProcessorSprite
-				.process(css, {from: goPath +'style.css', to: goPath +'style.css'})
+				.process(css, {from: goPath +'style.css', to: goPath +'style.css', map: optsMap})
 				.then(function (result) {
 					var resultStr = result.content;
 					if(sort != 'mobile'){
@@ -182,10 +185,10 @@ style.forEach(function(item, index, arr){
 						.replace(/@media screen and \(-webkit-min-device-pixel-ratio:\d\)(.)??\{}/g, '');
 					};
 					fs.writeFileSync(goPath +'style.css', result.css);
+					fs.writeFileSync(goPath +'style.css.map', result.map);
 					groups.length > 0 ? console.log('< '+ groups.length +' 張 sprite 產出完成! 等待 CSS 存檔後再啟動... >') : console.log('< style 產出完成! 等待 CSS 存檔後再啟動... >');
 				});
 			});
-			fs.writeFileSync(goPath +'style.css.map', result.map);
 		});
 	}
 });

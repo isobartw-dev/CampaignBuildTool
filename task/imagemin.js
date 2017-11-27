@@ -57,8 +57,8 @@ imgFolder.forEach(function(item, index, arr){
 		};
 		imagemin([input+'*.{jpg,png,gif,svg}'], item, {
 		    plugins: [
-		        pngquant({quality:'98-100'}),
-		        jpegrecompress({quality:'veryhigh', method:'smallfry', min: 80, loops: 3}),
+		        pngquant({quality:'85-100'}),
+		        jpegrecompress({quality:'veryhigh', method:'smallfry', min: 70, loops: 3}),
 		        gifsicle({interlaced: true, optimizationLevel: 3}),
 		        svgo({removeViewBox: false})
 		    ]
