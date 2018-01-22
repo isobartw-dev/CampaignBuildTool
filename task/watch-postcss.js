@@ -7,7 +7,7 @@ var sprite = require('postcss-sprites');
 var fs = require('fs');
 var path = require('path');
 var glob = require('glob');
-var style = glob.sync('{css/style-edit.css,mobile/css/style-edit.css}', {matchBase:true});
+var style = glob.sync('**/css/style-edit.css', {matchBase:true});
 var spriteMerge = [], mspriteMerge = [], selector, currselector, img, group, groups = [];
 var optsPrefixer = {browsers: ['last 1 versions', 'ie 8-10']};
 var optsSpritePc = {
