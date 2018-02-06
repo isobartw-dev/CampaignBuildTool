@@ -145,7 +145,8 @@ style.forEach(function(item, index, arr){
 	var imgFolder = /mobile/.test(item) ? 'mobile/images/sprite' : 'images/sprite';
 	var imgChange =  String(fs.statSync(imgFolder).ctime).slice(4, 21);
 	var css = fs.readFileSync(item);
-	var goPath = item.slice(0, -14)
+	var goPath = item.slice(0, -14);
+	var goMap = 'source-map/'+ goPath;
 	var optsMap = {inline: false, sourcesContent:false};
 	var optsSprite = /mobile/.test(item) ? optsSpriteMobile : optsSpritePc;
 	var Processor = postcss([preCss(optsPrecss), autoPrefixer(optsPrefixer)]);
@@ -185,7 +186,7 @@ style.forEach(function(item, index, arr){
 						.replace(/@media screen and \(-webkit-min-device-pixel-ratio:\d\)(.)??\{}/g, '');
 					};
 					fs.writeFileSync(goPath +'style.css', result.css);
-					fs.writeFileSync(goPath +'style.css.map', result.map);
+					fs.writeFileSync(goMap +'style.css.map', result.map);
 					groups.length > 0 ? console.log('< '+ groups.length +' 張 sprite 產出完成! 等待 CSS 存檔後再啟動... >') : console.log('< style 產出完成! 等待 CSS 存檔後再啟動... >');
 				});
 			});

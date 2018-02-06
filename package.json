@@ -20,7 +20,7 @@
 		"ngrok": "^2.1.7",
 		"onchange": "^3.2.1",
 		"parallelshell": "latest",
-		"postcss": "6.0.8",
+		"postcss": "6.0.16",
 		"postcss-clean": "^1.0.3",
 		"postcss-sprites": "4.2.1",
 		"precss": "2.0.0",

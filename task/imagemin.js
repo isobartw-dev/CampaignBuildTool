@@ -19,26 +19,30 @@ function optimizeCallbak(source, output, sort){
 	var outputSize = fs.statSync(output)['size'];
 	if(source == 0) return;
 	return function(err, stat){
-		switch(path.basename(output).split('.')[1]){
-			case 'png':
-				png.push(output);
-				break;
-			case 'jpg':
-				jpg.push(output);
-				break;
-			case 'gif':
-				gif.push(output);
-				break;
-			case 'svg':
-				svg.push(output);
-				break;
-		}
-		if(sort == 'mobile'){
-			mobileSize.push(outputSize);
+		if(err){
+			reject(err);
 		}else{
-			pcSize.push(outputSize);
+			switch(path.basename(output).split('.')[1]){
+				case 'png':
+					png.push(output);
+					break;
+				case 'jpg':
+					jpg.push(output);
+					break;
+				case 'gif':
+					gif.push(output);
+					break;
+				case 'svg':
+					svg.push(output);
+					break;
+			}
+			if(sort == 'mobile'){
+				mobileSize.push(outputSize);
+			}else{
+				pcSize.push(outputSize);
+			}
+			console.log(sprintf("%6s | %-"+ stringSize +"s\t%8s%2s%5s\t%s%7s", sort, path.basename(output), source, ' - ', source - outputSize, ' => ', outputSize));
 		}
-		console.log(sprintf("%6s | %-"+ stringSize +"s\t%8s%2s%5s\t%s%7s", sort, path.basename(output), source, ' - ', source - outputSize, ' => ', outputSize));
 	}
 };
 var minTime = log.get('image');
@@ -56,55 +60,63 @@ imgFolder.forEach(function(item, index, arr){
 			}
 		};
 		imagemin([input+'*.{jpg,png,gif,svg}'], item, {
-		    plugins: [
-		        pngquant({quality:'85-100'}),
-		        jpegrecompress({quality:'veryhigh', method:'smallfry', min: 70, loops: 3}),
-		        gifsicle({interlaced: true, optimizationLevel: 3}),
-		        svgo({removeViewBox: false})
-		    ]
+			plugins: [
+				pngquant({quality:'80-100'}),
+				jpegrecompress({quality:'veryhigh', method:'smallfry', min: 70, loops: 3}),
+				gifsicle({interlaced: true, optimizationLevel: 3}),
+				svgo({removeViewBox: false})
+		 	]
 		}).then(files => {
 		    fs.readdir(input, function(err, files){
-				for(var i = 0; i < files.length; i++){
-					var sourceSize = input.indexOf('mobile') > -1 ? mobile[i] : pc[i];
-					var outputFile = item + files[i];
-					mobileSaveSize = mobile.length == 0 ? 0 : mobile.reduce(getSum); 
-					pcSaveSize = pc.length == 0 ? 0 : pc.reduce(getSum);
-					if(input.indexOf('min') > -1){
-						fs.unlinkSync(input+files[i]);
+		    		if(err){
+		    			reject(err);
+		    		}else{
+					for(var i = 0; i < files.length; i++){
+						var sourceSize = input.indexOf('mobile') > -1 ? mobile[i] : pc[i];
+						var outputFile = item + files[i];
+						mobileSaveSize = mobile.length == 0 ? 0 : mobile.reduce(getSum); 
+						pcSaveSize = pc.length == 0 ? 0 : pc.reduce(getSum);
+						if(input.indexOf('min') > -1){
+							fs.unlinkSync(input+files[i]);
+						}
+						fs.stat(outputFile, optimizeCallbak(sourceSize, outputFile, sort));
 					}
-					fs.stat(outputFile, optimizeCallbak(sourceSize, outputFile, sort));
-				}
-				if(input.indexOf('min') > -1){
-					fs.rmdir(input);
-				}
+					if(input.indexOf('min') > -1){
+						fs.rmdirSync(input);
+					}
+		    		}
 			});
 		});
 	}
 	fs.readdir(item, function(err, files){
-		if(minTime){
-			fs.mkdtemp(item+'min', function(err, folder){
-				input = folder +'/';
-				// console.log(input);
-				files = files.filter(function(file){
-					var time = String(fs.statSync(item+file).mtime).slice(4, 21);
-					// console.log(file, time, minTime, time > minTime);
-					return Date.parse(time) > Date.parse(minTime) && /(png|jpg|gif|svg)/g.test(file);
-				});
-				files.forEach(function(file, index, arr){
-					fs.renameSync(item+file, input+file);
-				})
-				if(files.length == 0){
-					console.log(sort +" 沒有需要壓縮的圖片");
-					pcSaveSize = 0;
-					mobileSaveSize = 0;
-					fs.rmdir(input);
-					return;
-				}else{
-					optimize(item, input, files, pc, mobile, sort);
-				}
-			});
+		if(err){
+			reject(err);
 		}else{
-			optimize(item, input, files, pc, mobile, sort);
+			if(minTime){
+				fs.mkdtemp(item+'min', function(err, folder){
+					input = folder +'/';
+					// console.log(input);
+					files = files.filter(function(file){
+						var time = String(fs.statSync(item+file).mtime).slice(4, 21);
+						// console.log(file, time, minTime, time > minTime);
+						return Date.parse(time) > Date.parse(minTime) && /(png|jpg|gif|svg)/g.test(file);
+					});
+					files.forEach(function(file, index, arr){
+						fs.renameSync(item+file, input+file);
+					})
+					if(files.length == 0){
+						console.log(sort +" 沒有需要壓縮的圖片");
+						pcSaveSize = 0;
+						mobileSaveSize = 0;
+						fs.rmdirSync(input);
+						return;
+					}else{
+						optimize(item, input, files, pc, mobile, sort);
+					}
+				});
+			}else{
+				optimize(item, input, files, pc, mobile, sort);
+			}
 		}
 	});
 });
