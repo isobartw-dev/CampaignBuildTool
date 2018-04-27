@@ -1,3 +1,6 @@
+<<<<<<< HEAD:task/cssmin.js
+var postcss = require('postcss');
+var mqpacker = require("css-mqpacker");
 var postcss = require('postcss');
 var mqpacker = require("css-mqpacker");
 var nano = require('cssnano');
