@@ -2,40 +2,41 @@
 	"name": "CampaignBuildTool",
 	"version": "1.0.0",
 	"description": "ISOBAR TW frontend campaign build tool",
-	"private": true,
-	"dependencies":{
-		"autoprefixer": "latest",
+	"dependencies": {
+		"winreg": "1.2.2",
+		"@csstools/postcss-sass": "latest",
+		"autoprefixer": "^8.2.0",
+		"browser-sync": "^2.23.6",
 		"css-mqpacker": "latest",
-		"browser-sync": "^2.12.5",
 		"cssnano": "latest",
+		"dev-ip": "1.0.1",
 		"imagemin": "5.3.1",
+		"imagemin-gifsicle": "5.2.0",
 		"imagemin-jpeg-recompress": "5.1.0",
 		"imagemin-pngquant": "5.0.1",
-		"imagemin-gifsicle": "5.2.0",
 		"imagemin-svgo": "5.2.2",
 		"images": "3.0.1",
-		"ngrok": "^2.1.7",
+		"ngrok": "^2.3.0",
 		"onchange": "^3.2.1",
 		"parallelshell": "latest",
-		"postcss": "6.0.16",
-		"postcss-clean": "^1.0.3",
+		"postcss": "6.0.20",
+		"postcss-scss": "1.0.4",
 		"postcss-sprites": "4.2.1",
-		"precss": "2.0.0",
-		"postcss-scss": "1.0.3",
 		"tiny-sprintf": "latest",
-		"dev-ip": "1.0.1",
-		"winreg": "1.2.2"
+		"glyphhanger": "git@github.com:isobartw-dev/glyphhanger.git"
 	},
 	"scripts": {
 		"prepublish": "node task/init.js",
 		"runIIS": "node task/runIIS.js",
-		"watch:css": "onchange \"**/css/**/*.css\" -e **/css/style.css -- node task/watch-postcss.js",
+		"dev": "parallelshell \"npm run watch\" \"node task/browsersync.js\"",
+		"watch:css": "onchange \"**/*.css\" -e \"**/css/style.css\" -o \"echo {{changed}} > task/css.txt && node  task/csscompiled.js\"",
 		"watch:image": "onchange \"desktop\" -e *.jpg -- node task/imagefolder.js",
-		"watch": "parallelshell \"npm run watch:image\" \"npm run watch:css\"",
-		"deploy:css": "node task/deploy-postcss.js",
+		"watch:all": "parallelshell \"npm run watch:image\" \"npm run watch:css\"",
+		"deploy:css": "node task/cssmin.js",
 		"deploy:image": "node task/imagemin.js",
-		"deploy": "del /s npm-debug.log.* && npm run deploy:css && npm run deploy:image",
-		"dev": "parallelshell \"npm run watch\" \"node task/browsersync.js\""
+		"deploy:webfont": "node task/webfont.js",
+		"deploy:css+image": "del /s npm-debug.log.* && npm run deploy:css && npm run deploy:image",
+		"deploy:all": "del /s npm-debug.log.* && npm run deploy:webfont && npm run deploy:css && npm run deploy:image"
 	},
 	"license": "ISC",
 	"repository": {
@@ -46,5 +47,8 @@
 	"bugs": {
 		"url": "https://github.com/isobartw-dev/CampaignBuildTool.git/issues"
 	},
-	"homepage": "https://github.com/isobartw-dev/CampaignBuildTool.git#readme"
+	"homepage": "https://github.com/isobartw-dev/CampaignBuildTool.git#readme",
+	"devDependencies": {
+		"glyphhanger": "^3.0.3"
+	}
 }

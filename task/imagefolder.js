@@ -3,7 +3,7 @@ var fs = require('fs');
 var path = require('path');
 var glob = require('glob');
 var sourcePath = 'desktop';
-var imgFolder = glob.sync('{images/,mobile/images/}', {matchBase:true});
+var imgFolder = glob.sync('**/images/', { matchBase: true, ignore: 'node_modules/**' });
 
 function goFolder(files, callback){
 	var mobileImg = files.filter(function(file){
@@ -97,6 +97,6 @@ fs.readdir(sourcePath, (err, files) => {
 });
 process.on('exit', (code) => {
 	if(code != 0){
-		console.log('有地方出錯! task已停止');
+		console.log('有地方出錯!!重來一遍');
 	};
 });
