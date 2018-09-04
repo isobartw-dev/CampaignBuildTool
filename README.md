@@ -11,6 +11,7 @@ Campaign 專案開發前端自動化流程工具
     - 使用 node-sass 取代 precss
     - 增加 source-map 放置 map 檔案
     - dev 指令可自動偵測IIS是否啟動
+- 使用 v1.0 precss 開發的專案，請下載 v1.0 版本至專案使用
 
 ## 功能
 #### 檔案結構
