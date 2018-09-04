@@ -5,7 +5,7 @@ Campaign 專案開發前端自動化流程工具
 此版本為 Campaign 開發用，其他專案類型需視狀況調整 package.json 及 task  
 有任何問題請用 issues 提出或是 pull resuest
 
-##注意
+## 注意
 - 請升級至 Node Ver.8 以上
 - v2.0 更新項目
     - 使用 node-sass 取代 precss
