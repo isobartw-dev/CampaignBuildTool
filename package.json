@@ -28,7 +28,7 @@
 		"runIIS": "node task/runIIS.js",
 		"dev": "parallelshell \"npm run watch:all\" \"node task/browsersync.js\"",
 		"watch:css": "onchange \"**/*.css\" -e \"**/css/style.css\" -o \"echo {{changed}} > task/css.txt && node  task/csscompiled.js\"",
-		"watch:image": "onchange \"E:/Snow.Huang/My documents/Desktop/Output/**/*\" -e *.jpg -- node task/imagefolder.js",
+		"watch:image": "onchange \"desktop\" -e *.jpg -- node task/imagefolder.js",
 		"watch:all": "parallelshell \"npm run watch:image\" \"npm run watch:css\"",
 		"deploy:css": "node task/cssmin.js",
 		"deploy:image": "node task/imagemin.js",

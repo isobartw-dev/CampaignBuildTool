@@ -2,7 +2,7 @@ var images = require("images");
 var fs = require('fs');
 var path = require('path');
 var glob = require('glob');
-var sourcePath = 'E:\\Snow.Huang\\My documents\\Desktop\\Output\\';
+var sourcePath = 'desktop';
 var imgFolder = glob.sync('**/images/', { matchBase: true, ignore: 'node_modules/**' });
 
 function goFolder(files, callback){
