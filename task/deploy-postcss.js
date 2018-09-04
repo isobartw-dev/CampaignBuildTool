@@ -1,6 +1,6 @@
 var postcss = require('postcss');
-var mqpacker = require("css-mqpacker");
 var nano = require('cssnano');
+var mqpacker = require("css-mqpacker");
 var fs = require('fs');
 var path = require('path');
 var glob = require('glob');

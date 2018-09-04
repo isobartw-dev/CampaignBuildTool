@@ -4,12 +4,9 @@
 	"description": "ISOBAR TW frontend campaign build tool",
 	"private": true,
 	"dependencies":{
-		"winreg": "1.2.2"
-	},
-	"devDependencies": {
 		"autoprefixer": "latest",
-		"browser-sync": "^2.12.5",
 		"css-mqpacker": "latest",
+		"browser-sync": "^2.12.5",
 		"cssnano": "latest",
 		"imagemin": "5.3.1",
 		"imagemin-jpeg-recompress": "5.1.0",
@@ -27,6 +24,7 @@
 		"postcss-scss": "1.0.3",
 		"tiny-sprintf": "latest",
 		"dev-ip": "1.0.1"
+		"winreg": "1.2.2"
 	},
 	"scripts": {
 		"prepublish": "node task/init.js",

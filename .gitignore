@@ -4,6 +4,7 @@ src/
 css/
 images/
 mobile/
+font/
 *.css
 *.html
 *.sublime-project
