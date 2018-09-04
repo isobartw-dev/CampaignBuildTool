@@ -48,7 +48,7 @@ exports.writeTime = function(){
 exports.writePort = function(){
 	var glob = require('glob');
 	var dir = path.dirname(__dirname);
-	var file = dir +'\\'+ glob.sync('**/?*.sln', {matchBase:true}).toString();
+	var file = dir +'\\'+ glob.sync('**/*.sln', {matchBase:true, ignore:'node_modules/**'}).toString();
 	var linereader = rl.createInterface({
 		input: fs.createReadStream(file),
 		output: process.stdout

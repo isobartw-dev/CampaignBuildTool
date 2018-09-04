@@ -2,13 +2,34 @@ var browsersync = require("browser-sync");
 var ngrok = require('ngrok');
 var devip = require('dev-ip');
 var fs = require('fs');
+var execPort = require('child_process').exec;
 var log = require('./log');
 var port = log.get('port');
+
+execPort('tasklist /fi "imagename eq iisexpress.exe"', function(error, stdout, stderr){
+	if(stdout){
+		if(stdout.indexOf('iis') == -1){
+			console.log('沒有啟動IIS，我來幫你啟動IIS');
+			execPort('npm run runIIS', function(error, stdout, stderr) { 
+			 	if(error){
+			 		console.log(error);
+			 	}
+			}).on('exit', function(code, signal){
+				if(code == 0){
+					devUrl(port);
+				}
+			})
+		}else{
+			console.log('已成功啟動IIS並且快樂運行中');
+			devUrl(port);
+		}
+	}
+})
 
 function devUrl(getport){
 	ngrok.connect({
 		proto: 'http',
-		addr: getport,
+		addr: 'localhost:'+ getport,
 		host_header: 'localhost',
 		bind_tls: false
 	}, function (err, url) {
@@ -39,11 +60,10 @@ function devUrl(getport){
 			// mobile & 遠端測試用
 			// domain: devip()[0] +':3000'
 		},
-		open: false
+		open: true
 	})
 };
 
-devUrl(port);
 process.on('exit', (code) => {
 	if(code != 0){
 		console.log('有地方出錯! task已停止');

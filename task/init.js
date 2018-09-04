@@ -2,6 +2,9 @@ var fs = require('fs');
 var glob = require('glob');
 var imgFolder = glob.sync('**/images/', { matchBase: true, ignore: 'node_modules/**' });
 var cssFolder = glob.sync('**/css/', { matchBase: true, ignore: ['node_modules/**', 'source-map/**'] });
+var mapFolder = cssFolder.map(function(value, index, array){
+	return 'source-map/'+ value.replace('css/', 'css')
+}).concat(['source-map']);
 var cssNew = { dir: ['sass'], copy: ['style-edit.css'] };
 var log = require('./log');
 
@@ -54,7 +57,7 @@ cssFolder.forEach(function(item, index, arr) {
 	newItem(item, cssNew['copy'], 'copy');
 })
 
-newItem(__dirname.replace('task', ''), ['source-map', 'source-map/css', 'source-map/mobile/css'], 'folder');
+newItem(__dirname.replace('task', ''), mapFolder, 'folder');
 
 log.writeTime();
 log.setImgDir();

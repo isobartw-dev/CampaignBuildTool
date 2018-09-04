@@ -95,7 +95,7 @@ function getFile(file) {
 			if (!/sass/g.test(element)) {
 				return element;
 			}
-		}).join('/') + 'style-edit.css';
+		}).join('/') + '/style-edit.css';
 }
 
 function getPath(file) {
@@ -110,7 +110,7 @@ function setMap(cssFile) {
 
 function setSprite(cssFile) {
 	var cssPath = getPath(cssFile);
-	var spritePath = (cssPath + '/images').replace('css', '');
+	var spritePath = (cssPath + 'images').replace('css/', '');
 	return path.relative(cssPath, spritePath).replace(/\\/g, '/');
 }
 
