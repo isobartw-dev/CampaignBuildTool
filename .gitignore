@@ -1,13 +1,12 @@
 node_modules/
-dist/
-src/
 css/
 images/
 mobile/
 font/
-*.css
 *.html
 *.sublime-project
 *.sublime-workspace
 *.log.*
 package-lock.json
+task/css.txt
+task/log.txt

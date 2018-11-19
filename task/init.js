@@ -2,9 +2,6 @@ var fs = require('fs');
 var glob = require('glob');
 var imgFolder = glob.sync('**/images/', { matchBase: true, ignore: 'node_modules/**' });
 var cssFolder = glob.sync('**/css/', { matchBase: true, ignore: ['node_modules/**', 'source-map/**'] });
-var mapFolder = cssFolder.map(function(value, index, array){
-	return 'source-map/'+ value.replace('css/', 'css')
-}).concat(['source-map']);
 var cssNew = { dir: ['sass'], copy: ['style-edit.css'] };
 var log = require('./log');
 
@@ -29,10 +26,19 @@ function newItem(path, name, type) {
 				fs.stat(path + item, function(err, stats) {
 					if (err) {
 						if (err.code === 'ENOENT') {
-							if (type == 'folder') {
-								fs.mkdirSync(path + item);
-							} else if (type == 'copy') {
-								fs.renameSync(path + item.split('-')[0] + '.css', path + item);
+							switch (type){
+								case 'folder':
+									fs.mkdirSync(path + item);
+									break;
+								case 'copy':
+									fs.stat(path + item.split('-')[0] + '.css', function(err){
+										if(err){
+											fs.writeFileSync(path + item, '');
+										}else{
+											fs.renameSync(path + item.split('-')[0] + '.css', path + item);		
+										}
+									});
+									break;
 							}
 
 							item.indexOf('source') === -1 ? console.log(sort + ' | 建立' + item) : console.log('建立 ' + item);
@@ -55,9 +61,13 @@ imgFolder.forEach(function(item, index, arr) {
 cssFolder.forEach(function(item, index, arr) {
 	newItem(item, cssNew['dir'], 'folder');
 	newItem(item, cssNew['copy'], 'copy');
-})
 
-newItem(__dirname.replace('task', ''), mapFolder, 'folder');
+	execPort('mkdir '+ path.win32.join('source-map\\'+ item), function(error, stdout, stderr) {
+	    if (error) {
+	        console.log(error);
+	    }
+	});
+})
 
 log.writeTime();
 log.setImgDir();

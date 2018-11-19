@@ -2,29 +2,37 @@ var browsersync = require("browser-sync");
 var ngrok = require('ngrok');
 var devip = require('dev-ip');
 var fs = require('fs');
+var path = require('path');
 var execPort = require('child_process').exec;
 var log = require('./log');
 var port = log.get('port');
 
-execPort('tasklist /fi "imagename eq iisexpress.exe"', function(error, stdout, stderr){
-	if(stdout){
-		if(stdout.indexOf('iis') == -1){
-			console.log('沒有啟動IIS，我來幫你啟動IIS');
-			execPort('npm run runIIS', function(error, stdout, stderr) { 
-			 	if(error){
-			 		console.log(error);
-			 	}
-			}).on('exit', function(code, signal){
-				if(code == 0){
+fs.stat(path.dirname(__dirname) + '\\runIIS.wsf', function(err){
+	if(err){
+		devUrl();
+	}else{
+		execPort('tasklist /fi "imagename eq iisexpress.exe"', function(error, stdout, stderr){
+			if(stdout){
+				if(stdout.indexOf('iis') == -1){
+					console.log('沒有啟動IIS，我來幫你啟動IIS');
+					execPort('npm run runIIS', function(error, stdout, stderr) { 
+					 	if(error){
+					 		console.log(error);
+					 	}
+					}).on('exit', function(code, signal){
+						if(code == 0){
+							devUrl(port);
+						}
+					})
+				}else{
+					console.log('已成功啟動IIS並且快樂運行中');
 					devUrl(port);
 				}
-			})
-		}else{
-			console.log('已成功啟動IIS並且快樂運行中');
-			devUrl(port);
-		}
+			}
+		})
 	}
-})
+});
+
 
 function devUrl(getport){
 	ngrok.connect({
@@ -41,7 +49,8 @@ function devUrl(getport){
 		console.log('開發抓蟲用同網段網址');
 	});
 	browsersync({
-		proxy:'localhost:'+ getport,
+		proxy: getport ? 'localhost:'+ getport : false,
+		server: getport ? false : true,
 		port: 3000,
 		files: '**',
 		watchOptions: {
