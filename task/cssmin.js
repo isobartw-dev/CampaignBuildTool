@@ -6,18 +6,46 @@ var glob = require('glob');
 var style = glob.sync('**/style.css', { matchBase: true });
 var opts_nano = { preset: 'default' };
 var Processor = postcss([nano(opts_nano)]);
+var options = {
+	map:,
+	cssPath:
+};
 
-style.forEach(function(item, index, arr) {
-	var css = fs.readFileSync(item);
+module.exports = cssmin;
+
+function cssminProcessor (){
+	var css = fs.readFileSync(style);
+
 	Processor
-		.process(css, { from: item, to: item })
-		.then(function(result) {
-			fs.writeFileSync(item, result.css);
-		});
-});
+	    .process(css, {
+	        from: cssSourcePath,
+	        to: cssPath,
+	        map: optsMap
+	    })
+	    .then(function(result) {
+	        fs.writeFileSync(mapPath, result.map);
+	        fs.writeFileSync(cssPath, result.css);
+	    });
+}
 
-process.on('exit', (code) => {
-	if (code != 0) {
-		console.log('有地方出錯! task已停止');
+function cssmin(style, options) {
+	if(typeof style == 'object'){
+		style.forEach(function(item, index, arr) {
+		    cssminProcessor();
+		});
+	}else{
+		cssminProcessor();
 	}
-});
+
+	process.on('exit', (code) => {
+	    if (code != 0) {
+			console.log('cssmin.js有地方出錯!');
+	    }else{
+			if(!self){
+				console.log('< style 產出完成! 等待 CSS 存檔後再啟動... >');
+			}else{
+				console.log('CSS壓縮完成')
+			} 
+		}
+	});
+}(style, options);

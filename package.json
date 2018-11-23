@@ -3,10 +3,10 @@
 	"version": "2.0.0",
 	"description": "ISOBAR TW frontend campaign build tool",
 	"dependencies": {
-		"winreg": "1.2.2",
 		"@csstools/postcss-sass": "latest",
 		"autoprefixer": "^8.2.0",
 		"browser-sync": "^2.23.6",
+		"concurrently": "^4.1.0",
 		"cssnano": "latest",
 		"dev-ip": "1.0.1",
 		"imagemin": "5.3.1",
@@ -16,25 +16,23 @@
 		"imagemin-svgo": "5.2.2",
 		"images": "3.0.1",
 		"ngrok": "^2.3.0",
-		"onchange": "^5.0.0",
-		"parallelshell": "latest",
 		"postcss": "^7.0",
 		"postcss-scss": "2.0.0",
 		"postcss-sprites": "4.2.1",
 		"postcss-url": "^8.0.0",
-		"tiny-sprintf": "latest"
+		"tiny-sprintf": "latest",
+		"winreg": "1.2.2"
 	},
 	"scripts": {
 		"prepublish": "node task/init.js",
 		"runIIS": "node task/runIIS.js",
-		"dev": "parallelshell \"npm run watch:all\" \"node task/browsersync.js\"",
-		"watch:css": "onchange \"**/*.css\" \"**/*.scss\" -e \"**/css/style.css\" -e \"**/css/style-source.css\" -o \"echo {{changed}} > task/css.txt && node task/csscompiled.js\"",
+		"dev": "concurrently \"npm run watch\" \"node task/browsersync.js\"",
+		"watch:css": "onchange -v --await-write-finish -o \"echo {{changed}} > task/css.txt && node task/csscompiled.js\" \"**/*/*.{scss,css}\" -e \"**/*/{style,style-source}.css\"",
 		"watch:image": "onchange \"desktop\" -e *.jpg -- node task/imagefolder.js",
-		"watch:all": "parallelshell \"npm run watch:image\" \"npm run watch:css\"",
-		"deploy:css": "node task/cssmin.js",
-		"deploy:image": "node task/imagemin.js",
-		"deploy:css+image": "del /s npm-debug.log.* && npm run deploy:css && npm run deploy:image",
-		"deploy:all": "del /s npm-debug.log.* && npm run deploy:webfont && npm run deploy:css && npm run deploy:image"
+		"watch": "concurrently \"npm:watch:*\"",
+		"min:css": "node task/cssmin.js",
+		"min:image": "node task/imagemin.js",
+		"min:css+image": "del /s npm-debug.log.* && npm run deploy:css && npm run deploy:image"
 	},
 	"license": "ISC",
 	"repository": {

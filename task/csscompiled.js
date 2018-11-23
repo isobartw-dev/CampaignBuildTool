@@ -3,10 +3,10 @@ var scss = require('postcss-scss');
 var sass = require('@csstools/postcss-sass');
 var autoPrefixer = require('autoprefixer');
 var sprite = require('postcss-sprites');
-var nano = require('cssnano');
 var rebase = require('postcss-url');
 var fs = require('fs-extra');
 var path = require('path');
+var cssmin = require('./cssmin');
 var spriteGroups = [];
 var cssFile = getChangeFile('task/css.txt');
 var optsSass = { outputStyle: 'expanded' };
@@ -129,8 +129,7 @@ function cssProcess(cssFile) {
         sourcesContent: false,
         annotation: setMap(cssFile)
     };
-    var Processor = postcss([sass(optsSass)]).use(rebase(optsRebase));
-    var ProcessorMinify = postcss([sprite(optsSprite),autoPrefixer(optsPrefixer), nano(optsNano)]);
+    var Processor = postcss([sass(optsSass), rebase(optsRebase), sprite(optsSprite), autoPrefixer(optsPrefixer)]);
 
     console.log(sort + ' 產出 style 中...');
 
@@ -144,28 +143,21 @@ function cssProcess(cssFile) {
             fs.writeFileSync(mapPath, result.map);
             fs.writeFileSync(cssSourcePath, result.css);
             spriteGroups.length > 0 ? console.log('< ' + spriteGroups.length + ' 張 sprite 產出完成! >') : '';
+
+            cssmin(cssSourcePath);
             
-            ProcessorMinify
-                .process(result.css, {
-                    from: cssSourcePath,
-                    to: cssPath,
-                    map: optsMap
-                })
-                .then(function(result) {
-                    fs.writeFileSync(mapPath, result.map);
-                    fs.writeFileSync(cssPath, result.css);
-                    fs.copySync(cssPath, './public'+ cssPath.replace('src', ''));
-                    console.log('< style 產出完成! 等待 CSS 存檔後再啟動... >');
-                });
+            // ProcessorMinify
+            //     .process(result.css, {
+            //         from: cssSourcePath,
+            //         to: cssPath,
+            //         map: optsMap
+            //     })
+            //     .then(function(result) {
+            //         fs.writeFileSync(mapPath, result.map);
+            //         fs.writeFileSync(cssPath, result.css);
+            //         console.log('< style 產出完成! 等待 CSS 存檔後再啟動... >');
+            //     });
         });
 }
 
 cssProcess(cssFile);
-
-process.on('exit', (code) => {
-    if (code != 0 && code <= 128) {
-        console.log('有地方出錯! task已停止');
-    } else if (code > 128) {
-        console.log('離開');
-    }
-})
