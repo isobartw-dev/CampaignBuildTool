@@ -15,15 +15,13 @@ var optsPrefixer = {browsers: ["last 1 versions", "> 5%"]};
 var optsRebase = {
     url: function(asset, dir) {
         var fileParse = asset.url.split('/');
-        var imagePath = fileParse.slice(2).join('/');
-        if(imagePath.indexOf('images') > 2){
-            return imagePath
-        }else{
-            return path.posix.relative(dir.to.split('/').pop(), imagePath)
-        }
-        
+        var imagePath = path.posix.resolve(dir.to, fileParse.slice(1).join('/'));
+        var cssPath = path.posix.resolve(dir.to)
+
+        return path.posix.relative(cssPath, imagePath)
     }
 };
+
 var optsSprite = {
     stylesheetPath: './' + getPath(cssFile).split('css')[0] + 'css',
     spritePath: './' + getPath(cssFile).split('css')[0] + 'images',
@@ -53,30 +51,33 @@ var optsSprite = {
             backgroundPositionX = isNaN(backgroundPositionX) ? 0 : backgroundPositionX;
             backgroundPositionY = isNaN(backgroundPositionY) ? 0 : backgroundPositionY;
 
-            var backgroundImage = postcss.decl({
-                raws: rule.nodes[0].raws,
+            var backgroundImage = {
+                type: 'decl',
                 prop: 'background-image',
                 value: 'url(' + image.spriteUrl + ')'
-            });
-            var backgroundSize = postcss.decl({
+            };
+            var backgroundSize = {
+                type: 'decl',
                 prop: 'background-size',
                 value: Math.floor(backgroundSizeX * 10) / 10 + '% ' + Math.floor(backgroundSizeY * 10) / 10 + '%'
-            });
-            var backgroundPosition = postcss.decl({
+            };
+            var backgroundPosition = {
+                type: 'decl',
                 prop: 'background-position',
                 value: Math.floor(backgroundPositionX * 10) / 10 + '% ' + Math.floor(backgroundPositionY * 10) / 10 + '%'
-            });
-            var backgroundRepeat = postcss.decl({
+            };
+            var backgroundRepeat = {
+                type: 'decl',
                 prop: 'background-repeat',
                 value: 'no-repeat'
-            });
+            };
 
-            rule.insertAfter(token, backgroundImage);
-            rule.insertAfter(backgroundImage, backgroundPosition);
-            rule.insertAfter(backgroundPosition, backgroundSize);
+            token.cloneAfter(backgroundImage)
+                 .cloneAfter(backgroundPosition)
+                 .cloneAfter(backgroundSize)
 
             if (backgroundPositionX == 0 || backgroundPositionY == 0) {
-                rule.insertAfter(backgroundSize, backgroundRepeat);
+                token.cloneAfter(backgroundRepeat)
             }
         },
         onSaveSpritesheet: function(opts, spritesheet) {
@@ -93,6 +94,7 @@ var optsSprite = {
 
 function getChangeFile(file) {
     return path.dirname(fs.readFileSync(file, 'utf-8'))
+        .replace(/\"/g, '')
         .split('\\')
         .filter(function(element) {
             if (!/sass/.test(element)) {
@@ -123,7 +125,7 @@ function cssProcess(cssFile) {
     var cssSourcePath = getPath(cssFile) + '/style-source.css';
     var mapPath = setMap(cssFile).replace(/\.\.\//g, '');
     var spritePath = setSprite(cssFile);
-    var sort = /mobile/.test(cssPath) ? 'mobile' : 'pc';
+    
     var optsMap = {
         inline: false,
         sourcesContent: false,
@@ -131,7 +133,8 @@ function cssProcess(cssFile) {
     };
     var Processor = postcss([sass(optsSass), rebase(optsRebase), sprite(optsSprite), autoPrefixer(optsPrefixer)]);
 
-    console.log(sort + ' 產出 style 中...');
+    console.log('==================================')
+    console.log(cssPath + ' 產出中...')
 
     Processor
         .process(css, {
@@ -142,21 +145,9 @@ function cssProcess(cssFile) {
         .then(function(result) {
             fs.writeFileSync(mapPath, result.map);
             fs.writeFileSync(cssSourcePath, result.css);
-            spriteGroups.length > 0 ? console.log('< ' + spriteGroups.length + ' 張 sprite 產出完成! >') : '';
+            spriteGroups.length > 0 ? console.log('> 產出 ' + spriteGroups.length + ' 張 sprite!') : '';
 
             cssmin(cssSourcePath);
-            
-            // ProcessorMinify
-            //     .process(result.css, {
-            //         from: cssSourcePath,
-            //         to: cssPath,
-            //         map: optsMap
-            //     })
-            //     .then(function(result) {
-            //         fs.writeFileSync(mapPath, result.map);
-            //         fs.writeFileSync(cssPath, result.css);
-            //         console.log('< style 產出完成! 等待 CSS 存檔後再啟動... >');
-            //     });
         });
 }
 

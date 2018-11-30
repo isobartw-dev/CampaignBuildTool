@@ -1,5 +1,7 @@
 var fs = require('fs');
 var glob = require('glob');
+var execPort = require('child_process').exec;
+var path = require('path');
 var imgFolder = glob.sync('**/images/', { matchBase: true, ignore: 'node_modules/**' });
 var cssFolder = glob.sync('**/css/', { matchBase: true, ignore: ['node_modules/**', 'source-map/**'] });
 var cssNew = { dir: ['sass'], copy: ['style-edit.css'] };
