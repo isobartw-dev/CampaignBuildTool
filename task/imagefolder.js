@@ -1,61 +1,42 @@
-var images = require("images");
+var sharp = require("sharp");
 var fs = require('fs');
 var path = require('path');
 var glob = require('glob');
 var sourcePath = 'E:\\Snow.Huang\\My documents\\Desktop\\Output\\';
-var imgFolder = glob.sync('**/images/', { matchBase: true, ignore: 'node_modules/**' });
+var imgFolder = glob.sync('**/images/', { matchBase: true, ignore: 'node_modules/**' }).reverse();
 
 function goFolder(files, callback){
+	files.forEach(function(imgName, index, array) {
+		for (var i = 0; i < imgFolder.length;i++){
+			var filter = imgFolder[i].replace('images/', '').replace('/', '-');
 
-	var mobileImg = files.filter(function(file){
-		return file.indexOf('mobile') > -1;
-	});
+			if (imgName.indexOf(filter) > -1) {
+				var subFolder = !imgName.match(/\-\w{1,}\_/g) ? '' : imgName.match(/\-\w{1,}\_/g)[0].slice(1, -1) + '/';
 
-	var pcImg = files.filter(function(file){
-		return file.indexOf('mobile') === -1;
-	});
+				sort(imgName, imgFolder[i] + subFolder, filter);
+				return
+			}
+		}
+	})
 
-	imgFolder.forEach(function(item, index, arr){
-		var goPath = item;
-		var img = /mobile/.test(goPath) ? mobileImg : pcImg;
-		var i = 0;
+	function sort(img, goPath, filter) {
+		var outputItem = img.replace(filter, '');
 
-		function sort(img, goPath){
-			// console.log(img.length, i);
-			if(img.length > i){
-				var imgItem = img[i];
-				var folder = !imgItem.match(/\-\w{1,}\_/g) ? '' : imgItem.match(/\-\w{1,}\_/g)[0].slice(1,-1);
+		var is = fs.createReadStream(sourcePath + img);
+		var os = fs.createWriteStream(goPath + outputItem);
 
-				if(folder && /sprite/.test(folder)){
-					var outputItem = folder+ '/'+ (/mobile/.test(imgItem) ? imgItem.split('mobile-')[1] : imgItem);
-				}else if(folder){
-					var outputItem = folder+ '/'+ (/mobile/.test(imgItem) ? imgItem.split('mobile-')[1].replace('-'+ folder +'_', '') : imgItem.replace('-'+ folder +'_', ''));
-				}else{
-					var outputItem = /mobile/.test(imgItem) ? imgItem.split('mobile-')[1] : imgItem;
-				}	
+		// console.log(goPath + outputItem, sourcePath + img)
 
-				var is = fs.createReadStream(sourcePath + imgItem);
-				var os = fs.createWriteStream(goPath + outputItem);
-
-				is.pipe(os);
-				os.on('finish', function() {
-					++i;
-					console.log(imgItem +" 已到正確的資料夾");
-					if(img.length == i){
-						callback >> callback(sourcePath);
-					}else{
-						sort(img, goPath);
-					};
-				});
-			}else if(img.length == 0){
-				return;
-			};
-		};
-		sort(img, goPath);
-	});
+		is.pipe(os);
+		os.on('finish', function () {
+			console.log(outputItem + " 已到正確的資料夾");
+			callback >> callback(sourcePath);
+		});
+	};
 };
 
 fs.readdir(sourcePath, (err, files) => {
+	console.log(files)
 	if (/_tmp/.test(files.toString())){
 		return this;
 	}else{
@@ -67,29 +48,28 @@ fs.readdir(sourcePath, (err, files) => {
 		});
 		var i = 0;
 
-		console.log(img, convFile)
-
 		function convert(file, i){
 			// console.log(files, i);
 			if(file.length > i){
 				var item = file[i];
 				var ext = item.indexOf('@') > -1 ? item.slice(-10, -7) : item.slice(-7, -4);
 				var convFile = item.replace('_'+ ext, '').slice(0, -4) +'.'+ ext;
-				var data = images(sourcePath + item).encode(ext);
 
-				fs.writeFile(sourcePath + convFile, data, function(){
+				sharp(sourcePath + item).jpeg({
+					quality: 100
+				}).toFile(sourcePath + convFile, function(err, info){
 					img.push(convFile);
-					console.log(item + ' 已轉檔為'+ ext);
-					fs.stat(sourcePath + item, function(err, stats){
-						if(err == null){
-							fs.unlinkSync(sourcePath + item);
-						};
-						convert(file, i);
+					console.log(item + ' 已轉檔為' + ext);
+					fs.stat(sourcePath + item, function(err, stats) {
+					    if (err == null) {
+					        fs.unlinkSync(sourcePath + item);
+					    };
+					    convert(file, i);
 					});
 				});
 				i++;
 			}else{
-				goFolder(img, function(sourcePath){
+				goFolder(img,  function(sourcePath){
 					img.forEach(function(item){
 						fs.stat(sourcePath + item, function(err, stats){
 							if(err == null){
@@ -102,7 +82,7 @@ fs.readdir(sourcePath, (err, files) => {
 				});
 			};
 		};
-		// convert(convFile, i);
+		convert(convFile, i);
 	};
 });
 

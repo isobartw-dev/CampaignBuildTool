@@ -6,6 +6,7 @@ var imgFolder = glob.sync('**/images/', { matchBase: true, ignore: 'node_modules
 var cssFolder = glob.sync('**/css/', { matchBase: true, ignore: ['node_modules/**', 'source-map/**'] });
 var cssNew = { dir: ['sass'], copy: ['style-edit.css'] };
 var log = require('./log');
+var setting = require('./setting');
 
 function newItem(path, name, type) {
 	var sort = path.indexOf('mobile') > -1 ? 'mobile' : 'pc';
@@ -69,7 +70,7 @@ cssFolder.forEach(function(item, index, arr) {
 	        console.log(error);
 	    }
 	});
-})
+});
 
+setting.setImgDir();
 log.writeTime();
-log.setImgDir();

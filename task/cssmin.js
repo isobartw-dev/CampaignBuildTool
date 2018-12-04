@@ -51,4 +51,6 @@ function cssmin(cssSourcePath, self) {
             }
         }
     });
-}(style, true);
+}
+
+cssmin(style, true);

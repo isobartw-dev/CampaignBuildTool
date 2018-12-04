@@ -58,11 +58,12 @@ function devUrl(getport){
 			ignored: [
 				'task',
 				'node_modules',
+				'source-map',
 				'**/images',
 				'**/sass',
 				'**/sprite',
-				'**/*.css.map',
-				'**/style-edit.css'
+				'**/style-source.css',
+				'package.json'
 			],
 		},
 		socket: {

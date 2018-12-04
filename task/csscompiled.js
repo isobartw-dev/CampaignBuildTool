@@ -7,6 +7,7 @@ var rebase = require('postcss-url');
 var fs = require('fs-extra');
 var path = require('path');
 var cssmin = require('./cssmin');
+var imagesmin = require('./imagemin');
 var spriteGroups = [];
 var cssFile = getChangeFile('task/css.txt');
 var optsSass = { outputStyle: 'expanded' };
@@ -116,7 +117,7 @@ function setMap(cssFile) {
 function setSprite(cssFile) {
     var cssPath = getPath(cssFile);
     var spritePath = (cssPath + '/images').replace('css/', '');
-    return path.relative(cssPath, spritePath).replace(/\\/g, '/');
+    return spritePath;
 }
 
 function cssProcess(cssFile) {
@@ -124,7 +125,6 @@ function cssProcess(cssFile) {
     var cssPath = getPath(cssFile) + '/style.css';
     var cssSourcePath = getPath(cssFile) + '/style-source.css';
     var mapPath = setMap(cssFile).replace(/\.\.\//g, '');
-    var spritePath = setSprite(cssFile);
     
     var optsMap = {
         inline: false,
@@ -146,6 +146,8 @@ function cssProcess(cssFile) {
             fs.writeFileSync(mapPath, result.map);
             fs.writeFileSync(cssSourcePath, result.css);
             spriteGroups.length > 0 ? console.log('> 產出 ' + spriteGroups.length + ' 張 sprite!') : '';
+
+            imagesmin(setSprite(cssFile));
 
             cssmin(cssSourcePath);
         });
