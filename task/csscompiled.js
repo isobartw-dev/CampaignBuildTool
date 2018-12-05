@@ -9,7 +9,7 @@ var path = require('path');
 var cssmin = require('./cssmin');
 var imagesmin = require('./imagemin');
 var spriteGroups = [];
-var cssFile = getChangeFile('task/css.txt');
+var cssFile = getChangeFile('task/.changelog');
 var optsSass = { outputStyle: 'expanded' };
 var optsNano = { preset: 'default' };
 var optsPrefixer = {browsers: ["last 1 versions", "> 5%"]};
@@ -147,7 +147,7 @@ function cssProcess(cssFile) {
             fs.writeFileSync(cssSourcePath, result.css);
             spriteGroups.length > 0 ? console.log('> 產出 ' + spriteGroups.length + ' 張 sprite!') : '';
 
-            imagesmin(setSprite(cssFile));
+            imagesmin([setSprite(cssFile) +'/'], false);
 
             cssmin(cssSourcePath);
         });
