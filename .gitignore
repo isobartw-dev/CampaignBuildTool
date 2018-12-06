@@ -3,10 +3,13 @@ css/
 images/
 mobile/
 font/
+source-map/
 *.html
 *.sublime-project
 *.sublime-workspace
 *.log.*
+*.sln
+.changelog
 package-lock.json
 task/css.txt
 task/log.txt

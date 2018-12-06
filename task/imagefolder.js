@@ -8,7 +8,7 @@ var sourcePath = getChangeFile('task/.changelog');
 // var sourcePath = 'E:\\Snow.Huang\\My documents\\Desktop\\Output\\';
 var imgFolder = glob.sync('**/images/', { matchBase: true, ignore: 'node_modules/**' }).reverse();
 
-if (minTime > String(fs.statSync(sourcePath).mtime).slice(4, 24)){
+if (Date.parse(minTime) > Date.parse(String(fs.statSync(sourcePath).mtime).slice(4, 24))) {
 	return
 }
 

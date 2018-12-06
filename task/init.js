@@ -16,26 +16,26 @@ function newItem(path, name, type) {
 				if (err) {
 					if (err.code === 'ENOENT') {
 						fs.mkdirSync(path + name);
-						console.log(sort + ' | 建立' + name);
+						console.log(sort + ' | 建立 ' + path + name);
 					}
 				} else {
-					console.log(sort + ' | ' + name + '已存在');
+					console.log(sort + ' | ' + path + name + ' 已存在');
 					return
 				}
 			})
 			break;
 		case 'object':
 			name.forEach(function(item, index, arr) {
-				fs.stat(path + item, function(err, stats) {
-					if (err) {
-						if (err.code === 'ENOENT') {
+				fs.stat(path + item, function(error, stats) {
+					if (error) {
+						if (error.code === 'ENOENT') {
 							switch (type){
 								case 'folder':
 									fs.mkdirSync(path + item);
 									break;
 								case 'copy':
-									fs.stat(path + item.split('-')[0] + '.css', function(err){
-										if(err){
+									fs.stat(path + item.split('-')[0] + '.css', function(error){
+										if(error){
 											fs.writeFileSync(path + item, '');
 										}else{
 											fs.renameSync(path + item.split('-')[0] + '.css', path + item);		
@@ -44,10 +44,10 @@ function newItem(path, name, type) {
 									break;
 							}
 
-							item.indexOf('source') === -1 ? console.log(sort + ' | 建立' + item) : console.log('建立 ' + item);
+							item.indexOf('source') === -1 ? console.log(sort + ' | 建立 ' + path + item) : console.log('建立 ' + path + item);
 						}
 					} else {
-						item.indexOf('source') === -1 ? console.log(sort + ' | ' + item + '已存在') : console.log(item + '已存在');
+						item.indexOf('source') === -1 ? console.log(sort + ' | ' + path + item + ' 已存在') : console.log(path + item + ' 已存在');
 						return
 					}
 				});
@@ -57,19 +57,21 @@ function newItem(path, name, type) {
 
 }
 
-imgFolder.forEach(function(item, index, arr) {
-	newItem(item, 'sprite', 'folder');
+imgFolder.forEach(function(path, index, array) {
+	newItem(path, 'sprite', 'folder');
 })
 
-cssFolder.forEach(function(item, index, arr) {
-	newItem(item, cssNew['dir'], 'folder');
-	newItem(item, cssNew['copy'], 'copy');
+cssFolder.forEach(function(path, index, array) {
+	newItem(path, cssNew['dir'], 'folder');
+	newItem(path, cssNew['copy'], 'copy');
 
-	execPort('mkdir '+ path.win32.join('source-map\\'+ item), function(error, stdout, stderr) {
-	    if (error) {
-	        console.log(error);
-	    }
-	});
+	fs.stat('source-map', function (error, stats) {
+		if (error) {
+			fs.mkdirSync('source-map');
+		}
+
+		newItem('source-map/', path, 'folder');
+	})
 });
 
 setting.setImgDir();

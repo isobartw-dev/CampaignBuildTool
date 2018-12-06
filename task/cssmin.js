@@ -53,4 +53,8 @@ function cssmin(cssSourcePath, self) {
     });
 }
 
-cssmin(style, true);
+if (require.main === module) {
+    cssmin(style, true);
+} else {
+    module.exports = cssmin;
+}
