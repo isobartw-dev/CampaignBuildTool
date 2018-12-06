@@ -5,7 +5,7 @@ var rl = require('readline');
 exports = module.exports = {};
 exports.writeTime = function(){
 	fs.stat('task/log.txt', function(err, stat) {
-		var endTime = String(new Date().toString()).slice(4, 21);
+		var endTime = String(new Date().toString()).slice(4, 24);
 		if(err == null){
 			var readLog = fs.readFileSync('task/log.txt').toString();
 			if(readLog){

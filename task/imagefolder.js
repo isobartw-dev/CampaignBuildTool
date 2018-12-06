@@ -3,9 +3,14 @@ var fs = require('fs');
 var path = require('path');
 var glob = require('glob');
 var imagesmin = require('./imagemin');
+var minTime = require('./log').get('image');
 var sourcePath = getChangeFile('task/.changelog');
 // var sourcePath = 'E:\\Snow.Huang\\My documents\\Desktop\\Output\\';
 var imgFolder = glob.sync('**/images/', { matchBase: true, ignore: 'node_modules/**' }).reverse();
+
+if (minTime > String(fs.statSync(sourcePath).mtime).slice(4, 24)){
+	return
+}
 
 function getChangeFile(file) {
     if (process.platform == 'win32') {
@@ -55,8 +60,8 @@ fs.readdir(sourcePath, (err, files) => {
     if (/_tmp/.test(files.toString())) {
         return this;
     } else if (!sourcePath.match(/output/g)) {
-		console.log(process.pid)
-		// imagesmin([sourcePath], false);
+		// console.log(sourcePath)
+        imagesmin([sourcePath], false);
     } else {
         var convFile = files.filter(function(file) {
             return file.indexOf('_jpg') > -1;
