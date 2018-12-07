@@ -9,6 +9,7 @@ var svgo = require('imagemin-svgo');
 var sprintf = require('tiny-sprintf');
 var log = require('./log');
 var imgFolder = glob.sync('**/images/', { matchBase: true, ignore: ['node_modules/**', '**/images/sprite/'] });
+var minTime = log.get('image');
 var stringSize = 0;
 var imageType = {
     png: [],
@@ -19,16 +20,13 @@ var imageType = {
 var imageSize = {
     pc: {
         origin: [],
-        save: '',
         min: []
     },
     mobile: {
         origin: [],
-        save: '',
         min: []
     }
 };
-var total;
 
 function getSum(total, num) {
     return total + num;
@@ -43,14 +41,14 @@ function sizeUnit(size) {
     return size;
 };
 
-function optimizeCallbak(source, output, sort) {
-    return function(err, stat) {
-        if (err) {
-            reject(err);
+function optimizeCallbak(input, output, sort) {
+    return function(error, stat) {
+        if (error) {
+            reject(error);
         } else {
             var outputSize = fs.statSync(output)['size'];
 
-            if (source == 0) return;
+            if (input == 0) return;
             switch (path.basename(output).split('.')[1]) {
                 case 'png':
                     imageType.png.push(output);
@@ -65,6 +63,7 @@ function optimizeCallbak(source, output, sort) {
                     imageType.svg.push(output);
                     break;
             }
+            
             if (sort == 'mobile') {
                 imageSize.mobile.min.push(outputSize);
             } else {
@@ -84,91 +83,82 @@ function optimize(input, files, options = { pc, mobile, sort }) {
 
         if (options) {
             stringSize = file.length > stringSize ? file.length : stringSize;
+
             if (input.indexOf('mobile') > -1) {
-                options.mobile.push(fs.statSync(file)['size']);
+                mobile.push(fs.statSync(file)['size']);
             } else {
-                options.pc.push(fs.statSync(file)['size']);
+                pc.push(fs.statSync(file)['size']);
             }
         } else {
             minImages.push(fs.statSync(file)['size']);
         }
     };
 
-     imagemin(files, input, {
-         plugins: [
-             pngquant({
-                 quality: '80-100'
-             }),
-             jpegrecompress({
-                 quality: 'veryhigh',
-                 method: 'smallfry',
-                 min: 80,
-                 loops: 3
-             }),
-             gifsicle({
-                 interlaced: true,
-                 optimizationLevel: 3
-             }),
-             svgo({
-                 removeViewBox: false
-             })
-         ]
-     }).then(files => {
-         log.writeTime();
+    imagemin(files, input, {
+        plugins: [
+            pngquant({
+                quality: '80-100'
+            }),
+            jpegrecompress({
+                quality: 'veryhigh',
+                method: 'smallfry',
+                min: 80,
+                loops: 3
+            }),
+            gifsicle({
+                interlaced: true,
+                optimizationLevel: 3
+            }),
+            svgo({
+                removeViewBox: false
+            })
+        ]
+    }).then(files => {
+        log.writeTime();
 
-         for (var i = 0; i < files.length; i++) {
-             var outputFile = files[i].path;
+        for (var i = 0; i < files.length; i++) {
+            var outputFile = files[i].path;
 
-             if (options) {
-                 var sourceSize = input.indexOf('mobile') > -1 ? options.mobile[i] : options.pc[i];
-                 imageSize.mobile.save = options.mobile.length == 0 ? 0 : options.mobile.reduce(getSum);
-                 imageSize.pc.save = options.pc.length == 0 ? 0 : options.pc.reduce(getSum);
+            if (options) {
+                var sourceSize = input.indexOf('mobile') > -1 ? mobile[i] : pc[i];
 
-                 fs.stat(outputFile, optimizeCallbak(sourceSize, outputFile, options.sort));
-             } else {
-                 var minImagesMinSize = sizeUnit(fs.statSync(outputFile)['size']);
-                 var minImagesSaveSize = sizeUnit(minImages[i] - fs.statSync(outputFile)['size']);
+                fs.stat(outputFile, optimizeCallbak(sourceSize, outputFile, options.sort));
+            } else {
+                var minImagesMinSize = sizeUnit(fs.statSync(outputFile)['size']);
+                var minImagesSaveSize = sizeUnit(minImages[i] - fs.statSync(outputFile)['size']);
 
-                 console.log(outputFile + ' 壓縮了 ' + minImagesSaveSize +
-                     ' => ' + minImagesMinSize);
-             }
-         }
-     });
+                console.log(outputFile + ' 壓縮了 ' + minImagesSaveSize +
+                    ' => ' + minImagesMinSize);
+            }
+        }
+    });
 }
 
 function imagesmin(imgFolder, self) {
-    total = self;
-    // console.log(imgFolder, self)
-
     imgFolder.forEach(function(item, index, arr) {
-        var sort = item.replace(/(\/images|images)\//g, '').indexOf('mobile') > -1 ? item.replace(/(\/images|images)\//g, '') : 'pc';
         var input = item;
+        var sort = input.replace(/(\/images|images)\//g, '').indexOf('mobile') > -1 ? input.replace(/(\/images|images)\//g, '') : 'pc';
         var options = self != true ? self : {
             pc: imageSize.pc.origin,
             mobile: imageSize.mobile.origin,
             sort: sort
         }
 
-        fs.readdir(input, function(err, files) {
-            if (err) {
-                reject(err);
+        fs.readdir(input, function(error, files) {
+            if (error) {
+                reject(error);
             } else {
                 if (minTime) {
                     files = files.filter(function(file) {
                         var time = String(fs.statSync(input + file).mtime).slice(4, 24);
                         // console.log(file, Date.parse(time), Date.parse(minTime), Date.parse(time) > Date.parse(minTime));
                         return Date.parse(time) > Date.parse(minTime) && /(png|jpg|gif|svg)/g.test(file);
-                    }).map(function(file){
+                    }).map(function(file) {
                         return input + file
                     });
 
                     if (files.length == 0) {
                         console.log(sort + " 沒有需要壓縮的圖片");
-                        if (self) {
-                            imageSize.pc.save = 0;
-                            imageSize.mobile.save = 0;
-                            // fs.rmdirSync(input);
-                        }
                         return;
                     } else {
                         // console.log(input, files, options)
@@ -192,23 +182,23 @@ process.on('exit', (code) => {
     var gif = imageType.gif;
     var svg = imageType.svg;
 
-    if (code == 0 && total == true && mobile.save != 0 || code == 0 && pc.save != 0) {
+    if (code == 0 && mobile.orign.length != 0 || code == 0 && pc.orign.length != 0) {
+        var mobileOriginSize = mobile.orign.length == 0 ? 0 : mobile.orign.reduce(getSum);
+        var pcOriginSize = pc.orign.length == 0 ? 0 : pc.orign.reduce(getSum);
         var mobileMinSize = mobile.min.length == 0 ? 0 : mobile.min.reduce(getSum);
         var pcMinSize = pc.min.length == 0 ? 0 : pc.min.reduce(getSum);
-        var mobileSaveSize = mobile.save - mobileMinSize;
-        var pcSaveSize = pc.save - pcMinSize;
+        var mobileSaveSize = mobileOriginSize - mobileMinSize;
+        var pcSaveSize = pcOriginSize - pcMinSize;
 
         console.log(sprintf("%'=80s\n%5s\t%5s\t%5s\t%5s", '', png.length + ' png', jpg.length + ' jpg', gif.length + ' gif', svg.length + ' svg'));
         console.log(sprintf("%-13s\t%3s%10s\t%3s%10s", 'mobile images', '壓縮了', sizeUnit(mobileSaveSize), '=>', sizeUnit(mobileMinSize)));
         console.log(sprintf("%-13s\t%3s%10s\t%3s%10s", 'pc images', '壓縮了', sizeUnit(pcSaveSize), '=>', sizeUnit(pcMinSize)));
-    } else if (code == 0 && mobile.save == 0 || code == 0 && pc.save == 0 || total == false) {
+    } else if (code == 0 && mobile.orign.length == 0 || code == 0 && pc.orign.length == 0) {
         return false;
     } else {
         console.log('有地方出錯! task已停止');
     }
 });
-
-var minTime = log.get('image');
 
 if (require.main === module) {
     imagesmin(imgFolder, true);

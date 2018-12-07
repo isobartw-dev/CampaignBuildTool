@@ -5,21 +5,20 @@ var glob = require('glob');
 var imagesmin = require('./imagemin');
 var minTime = require('./log').get('image');
 var sourcePath = getChangeFile('task/.changelog');
-// var sourcePath = 'E:\\Snow.Huang\\My documents\\Desktop\\Output\\';
 var imgFolder = glob.sync('**/images/', { matchBase: true, ignore: 'node_modules/**' }).reverse();
 
 if (Date.parse(minTime) > Date.parse(String(fs.statSync(sourcePath).mtime).slice(4, 24))) {
 	return
 }
 
-function getChangeFile(file) {
+function getChangeFile(changelog) {
     if (process.platform == 'win32') {
-        return path.win32.dirname(fs.readFileSync(file, 'utf-8'))
+        return path.win32.dirname(fs.readFileSync(changelog, 'utf-8'))
             .replace(/\"/g, '')
             .split('\\')
             .join('/') + '/';
     } else {
-        return path.dirname(fs.readFileSync(file, 'utf-8'))
+        return path.dirname(fs.readFileSync(changelog, 'utf-8'))
             .replace(/\"/g, '')
             .split('\\')
             .join('/') + '/';
@@ -27,23 +26,23 @@ function getChangeFile(file) {
 }
 
 function goFolder(files, callback){
-	files.forEach(function(imgName, index, array) {
+	files.forEach(function(file, index, array) {
 		for (var i = 0; i < imgFolder.length;i++){
 			var filter = imgFolder[i].replace('images/', '').replace('/', '-');
 
-			if (imgName.indexOf(filter) > -1) {
-				var subFolder = !imgName.match(/\-\w{1,}\_/g) ? '' : imgName.match(/\-\w{1,}\_/g)[0].slice(1, -1) + '/';
+			if (file.indexOf(filter) > -1) {
+				var subFolder = !file.match(/\-\w{1,}\_/g) ? '' : file.match(/\-\w{1,}\_/g)[0].slice(1, -1) + '/';
 
-				sort(imgName, imgFolder[i] + subFolder, filter);
+				sort(file, imgFolder[i] + subFolder, filter);
 				return
 			}
 		}
 	})
 
-	function sort(img, goPath, filter) {
-		var outputItem = img.replace(filter, '');
+	function sort(imgFile, goPath, filter) {
+		var outputItem = imgFile.replace(filter, '');
 
-		var is = fs.createReadStream(sourcePath + img);
+		var is = fs.createReadStream(sourcePath + imgFile);
 		var os = fs.createWriteStream(goPath + outputItem);
 
 		// console.log(goPath + outputItem, sourcePath + img)
@@ -56,47 +55,47 @@ function goFolder(files, callback){
 	};
 };
 
-fs.readdir(sourcePath, (err, files) => {
+fs.readdir(sourcePath, (error, files) => {
     if (/_tmp/.test(files.toString())) {
         return this;
     } else if (!sourcePath.match(/output/g)) {
 		// console.log(sourcePath)
         imagesmin([sourcePath], false);
     } else {
-        var convFile = files.filter(function(file) {
+        var convFiles = files.filter(function(file) {
             return file.indexOf('_jpg') > -1;
         });
-        var img = files.filter(function(file) {
+        var allFiles = files.filter(function(file) {
             return file.indexOf('_jpg') === -1;
         });
         var i = 0;
 
-        function convert(file, i) {
+        function convert(convFiles, i) {
             // console.log(files, i);
-            if (file.length > i) {
-                var item = file[i];
-                var ext = item.indexOf('@') > -1 ? item.slice(-10, -7) : item.slice(-7, -4);
-                var convFile = item.replace('_' + ext, '').slice(0, -4) + '.' + ext;
+            if (convFiles.length > i) {
+                var file = convFiles[i];
+                var ext = file.indexOf('@') > -1 ? file.slice(-10, -7) : file.slice(-7, -4);
+                var convFile = file.replace('_' + ext, '').slice(0, -4) + '.' + ext;
 
-                sharp(sourcePath + item).jpeg({
+                sharp(sourcePath + file).jpeg({
                     quality: 100
-                }).toFile(sourcePath + convFile, function(err, info) {
+                }).toFile(sourcePath + convFile, function(error, info) {
                     img.push(convFile);
-                    console.log(item + ' 已轉檔為' + ext);
-                    fs.stat(sourcePath + item, function(err, stats) {
-                        if (err == null) {
-                            fs.unlinkSync(sourcePath + item);
+                    console.log(file + ' 已轉檔為' + ext);
+                    fs.stat(sourcePath + file, function(error, stats) {
+                        if (error == null) {
+                            fs.unlinkSync(sourcePath + file);
                         };
-                        convert(file, i);
+                        convert(convFiles, i);
                     });
                 });
                 i++;
             } else {
-                goFolder(img, function(sourcePath) {
-                    img.forEach(function(item) {
-                        fs.stat(sourcePath + item, function(err, stats) {
-                            if (err == null) {
-                                fs.unlinkSync(sourcePath + item);
+                goFolder(allFiles, function(sourcePath) {
+                    allFiles.forEach(function(file) {
+                        fs.stat(sourcePath + file, function(error, stats) {
+                            if (error == null) {
+                                fs.unlinkSync(sourcePath + file);
                             } else {
                                 console.log('電腦秀逗惹~等等他');
                             };
