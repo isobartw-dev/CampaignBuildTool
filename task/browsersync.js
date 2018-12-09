@@ -14,9 +14,9 @@ fs.stat(path.dirname(__dirname) + '\\runIIS.wsf', function(error) {
     } else {
         execPort('tasklist /fi "imagename eq iisexpress.exe"', function(error, stdout, stderr) {
             if (stdout) {
-				console.log(stdout)
+				// console.log(stdout)
                 if (stdout.indexOf('iis') == -1) {
-                    console.log('沒有啟動IIS，我來幫你啟動IIS');
+                    console.log('沒有啟動IIS，我來幫你啟動IIS');    
                     execPort('npm run runIIS', function(error, stdout, stderr) {
                         if (error) {
                             console.log(error);
