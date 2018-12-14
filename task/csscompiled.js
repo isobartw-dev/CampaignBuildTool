@@ -12,7 +12,7 @@ var spriteGroups = [];
 var cssFile = getChangeFile('task/.changelog');
 var optsSass = { outputStyle: 'expanded' };
 var optsNano = { preset: 'default' };
-var optsPrefixer = {browsers: ["last 1 versions", "> 5%"]};
+var optsPrefixer = { browsers: ["last 1 versions", "> 5%"] };
 var optsRebase = {
     url: function(asset, dir) {
         var fileParse = asset.url.split('/');
@@ -74,8 +74,8 @@ var optsSprite = {
             };
 
             token.cloneAfter(backgroundImage)
-                 .cloneAfter(backgroundPosition)
-                 .cloneAfter(backgroundSize)
+                .cloneAfter(backgroundPosition)
+                .cloneAfter(backgroundSize)
 
             if (backgroundPositionX == 0 || backgroundPositionY == 0) {
                 token.cloneAfter(backgroundRepeat)
@@ -92,6 +92,7 @@ var optsSprite = {
     }
 
 };
+
 
 function getChangeFile(file) {
     return path.dirname(fs.readFileSync(file, 'utf-8'))
@@ -110,7 +111,7 @@ function getPath(file) {
 
 function setMap(cssFile) {
     var cssPath = getPath(cssFile);
-    var mapPath = 'source-map/'+ cssPath +'/style.css.map';
+    var mapPath = 'source-map/' + cssPath + '/style.css.map';
     return path.relative(cssPath, mapPath).replace(/\\/g, '/');
 }
 
@@ -125,13 +126,14 @@ function cssProcess(cssFile) {
     var cssPath = getPath(cssFile) + '/style.css';
     var cssSourcePath = getPath(cssFile) + '/style-source.css';
     var mapPath = setMap(cssFile).replace(/\.\.\//g, '');
-    
+
     var optsMap = {
         inline: false,
         sourcesContent: false,
         annotation: setMap(cssFile)
     };
     var Processor = postcss([sass(optsSass), rebase(optsRebase), sprite(optsSprite), autoPrefixer(optsPrefixer)]);
+
 
     console.log('==================================')
     console.log(cssPath + ' 產出中...')
@@ -145,12 +147,25 @@ function cssProcess(cssFile) {
         .then(function(result) {
             fs.writeFileSync(mapPath, result.map);
             fs.writeFileSync(cssSourcePath, result.css);
-            spriteGroups.length > 0 ? console.log('> 產出 ' + spriteGroups.length + ' 張 sprite!') : '';
 
-            imagesmin([setSprite(cssFile) +'/'], false);
+            if (spriteGroups.length > 0) {
+                console.log('> 產出 ' + spriteGroups.length + ' 張 sprite!')
+                imagesmin([setSprite(cssFile) + '/'], false);
+            }
 
             cssmin(cssSourcePath);
         });
 }
+
+process.on('unhandledRejection', function(reason, p) {
+    console.log('有無法處裡的錯誤 => ' + p);
+    console.log('原因 => ' + reason);
+})
+
+fs.stat(cssFile, function(error, data) {
+    if (error) {
+        return
+    }
+})
 
 cssProcess(cssFile);

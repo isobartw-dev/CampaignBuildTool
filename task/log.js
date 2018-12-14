@@ -52,10 +52,14 @@ exports.writeIISData = function() {
 
         fs.stat('task/log.txt', function(error, stat) {
             if (error == null) {
-                var readLog = fs.readFileSync('task/log.txt').toString();
+                var readLog = fs.readFileSync('task/log.txt').toString().split('\r');
+
+                console.log(readLog)
 
                 if (readLog) {
-                    fs.appendFileSync('task/log.txt', '\r' + data);
+                    if (readLog.indexOf(type) == -1){
+                        fs.appendFileSync('task/log.txt', '\r' + data);
+                    }
                 } else {
                     fs.appendFileSync('task/log.txt', data);
                 };
