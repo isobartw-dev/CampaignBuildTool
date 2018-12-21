@@ -8,21 +8,15 @@ var sourcePath = getChangeFile('task/.changelog');
 var imgFolder = glob.sync('**/images/', { matchBase: true, ignore: 'node_modules/**' }).reverse();
 
 // console.log(minTime, String(fs.statSync(sourcePath).atime).slice(4, 24))
-if (Date.parse(minTime) > String(fs.statSync(sourcePath).atime).slice(4, 24)) {
-    return
-}
 
 function getChangeFile(changelog) {
+    var data = fs.readFileSync(changelog, 'utf-8');
+    if (!data) return;
+
     if (process.platform == 'win32') {
-        return path.win32.dirname(fs.readFileSync(changelog, 'utf-8'))
-            .replace(/\"/g, '')
-            .split('\\')
-            .join('/') + '/';
+        return path.win32.dirname(data) + '/';
     } else {
-        return path.dirname(fs.readFileSync(changelog, 'utf-8'))
-            .replace(/\"/g, '')
-            .split('\\')
-            .join('/') + '/';
+        return path.dirname(data) + '/';
     }
 }
 
@@ -50,65 +44,79 @@ function goFolder(files, callback) {
 
         is.pipe(os);
         os.on('finish', function() {
-            console.log(outputItem + " 已到正確的資料夾");
+            console.log('> ' + outputItem + ' 已到正確的資料夾');
             callback >> callback(sourcePath, outputItem, goPath);
         });
     };
 };
 
-fs.readdir(sourcePath, (error, files) => {
-    if (/_tmp/.test(files.toString())) {
-        return this;
-    } else if (!sourcePath.match(/output/ig)) {
-        imagesmin([sourcePath], false);
-    } else {
-        var convFiles = files.filter(function(file) {
-            return file.indexOf('_jpg') > -1;
-        });
-        var allFiles = files.filter(function(file) {
-            return file.indexOf('_jpg') === -1;
-        });
-        var i = 0;
-        isFinish = false;
+function imagefolder(sourcePath) {
+    fs.readdir(sourcePath, (error, files) => {
+        if (/_tmp/.test(files.toString())) {
+            return this;
+        } else if (!sourcePath.match(/output/ig)) {
+            imagesmin([sourcePath], false);
+        } else {
+            var convFiles = files.filter(function(file) {
+                return file.indexOf('_jpg') > -1;
+            });
+            var allFiles = files.filter(function(file) {
+                return file.indexOf('_jpg') === -1;
+            });
+            var i = 0;
+            isFinish = false;
 
-        function convert(convFiles, i) {
-            // console.log(files, i);
-            if (convFiles.length > i) {
-                var file = convFiles[i];
-                var ext = file.indexOf('@') > -1 ? file.slice(-10, -7) : file.slice(-7, -4);
-                var convFile = file.replace('_' + ext, '').slice(0, -4) + '.' + ext;
+            function convert(convFiles, i) {
+                // console.log(files, i);
+                if (convFiles.length > i) {
+                    var file = convFiles[i];
+                    var ext = file.indexOf('@') > -1 ? file.slice(-10, -7) : file.slice(-7, -4);
+                    var convFile = file.replace('_' + ext, '').slice(0, -4) + '.' + ext;
 
-                sharp(sourcePath + file).jpeg({
-                    quality: 100
-                }).toFile(sourcePath + convFile, function(error, info) {
-                    allFiles.push(convFile);
-                    console.log(file + ' 已轉檔為' + ext);
-                    fs.stat(sourcePath + file, function(error, stats) {
-                        if (error == null) {
-                            fs.unlinkSync(sourcePath + file);
-                        };
-                        convert(convFiles, i);
+                    sharp(sourcePath + file).jpeg({
+                        quality: 100
+                    }).toFile(sourcePath + convFile, function(error, info) {
+                        allFiles.push(convFile);
+                        console.log('> ' + file + ' 已轉檔為' + ext);
+                        fs.stat(sourcePath + file, function(error, stats) {
+                            if (error == null) {
+                                fs.unlinkSync(sourcePath + file);
+                            };
+                            convert(convFiles, i);
+                        });
                     });
-                });
-                i++;
-            } else {
-                goFolder(allFiles, function(sourcePath, file, goPath) {
-                    fs.stat(sourcePath + file, function(error, stats) {
-                        if (error == null) {
-                            fs.unlinkSync(sourcePath + file);
-                        } else {
-                            console.log('電腦秀逗惹~等等他');
-                        };
+                    i++;
+                } else {
+                    goFolder(allFiles, function(sourcePath, file, goPath) {
+                        fs.stat(sourcePath + file, function(error, stats) {
+                            if (error == null) {
+                                fs.unlinkSync(sourcePath + file);
+                            } else {
+                                console.log('電腦秀逗惹~等等他');
+                            };
+                        });
                     });
-                });
+                };
             };
+            convert(convFiles, i);
         };
-        convert(convFiles, i);
-    };
-});
+    });
+
+}
 
 process.on('exit', (code) => {
     if (code != 0) {
         console.log('有地方出錯!!重來一遍');
+    } else {
+        fs.writeFileSync('task/.changelog', '');
     };
 })
+
+if (sourcePath) {
+    fs.stat(sourcePath, function(error, data) {
+        if (!error && Date.parse(minTime) < fs.statSync(sourcePath).atime) {
+            // console.log(sourcePath)
+            imagefolder(sourcePath)
+        }
+    })
+}

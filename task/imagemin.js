@@ -57,7 +57,7 @@ function optimizeCallbak(input, output, sort) {
     }
 };
 
-function optimize(input, files, options = { pc, mobile, sort }) {
+function optimize(input, files, task, options = { pc, mobile, sort }) {
     var minImages = [];
 
     for (var i = 0; i < files.length; i++) {
@@ -100,6 +100,10 @@ function optimize(input, files, options = { pc, mobile, sort }) {
     }).then(files => {
         log.writeTime();
 
+        if (minImages.length != 0 && !task){
+            console.log('==================================')
+        }
+
         for (var i = 0; i < files.length; i++) {
             var outputFile = files[i].path;
 
@@ -118,7 +122,7 @@ function optimize(input, files, options = { pc, mobile, sort }) {
     });
 }
 
-function imagesmin(imgFolder, self) {
+function imagesmin(imgFolder, self, task) {
     var minTime = log.get('image');
     var stringSize = 0;
     var imageType = {
@@ -167,14 +171,14 @@ function imagesmin(imgFolder, self) {
                         return;
                     } else {
                         // console.log(input, files, options)
-                        optimize(input, files, options);
+                        optimize(input, files, task, options);
                     }
                 } else {
                     files = files.map(function(file) {
                         return input + file
                     });
                     // console.log(input, files, options)
-                    optimize(input, files, options);
+                    optimize(input, files, task, options);
                 }
             }
         });

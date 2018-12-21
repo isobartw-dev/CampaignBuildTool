@@ -17,6 +17,7 @@
 		"imagemin-svgo": "5.2.2",
 		"increase-memory-limit": "^1.0.6",
 		"ngrok": "^2.3.0",
+		"nodemon": "^1.18.9",
 		"onchange": "^5.2.0",
 		"postcss": "^7.0",
 		"postcss-scss": "2.0.0",
@@ -29,11 +30,12 @@
 	"scripts": {
 		"prepublish": "node task/init.js",
 		"runIIS": "node task/runIIS.js",
-		"fix-memory-limit": "cross-env LIMIT=2048 increase-memory-limit",
 		"dev": "concurrently \"npm run watch\" \"node task/browsersync.js\"",
+		"watch:css:nodemon":"node task/watch-css.js",
+		"watch:image:nodemon": "node task/watch-image.js",
 		"watch:css": "onchange -v --await-write-finish -k -f \"change\" -o \"> task/.changelog && node task/csscompiled.js\" \"**/{css,css/*}/*.{scss,css}\" -e \"**/{css,*/css}/{style,style-source,style-edit}.css\" -- echo {{changed}}",
 		"watch:image": "onchange --await-write-finish -k -f \"add change\" -o \"> task/.changelog && node task/imagefolder.js\" \"E:/Snow.Huang/My documents/Desktop/Output/*.png\" \"**/{images,images/*}/*.{jpg,png,gif,svg}\" -e \"**/{images,images/*}/sprite/*.{jpg,png,gif,svg}\" -- echo {{changed}}",
-		"watch": "npm run fix-memory-limit && concurrently \"npm:watch:*\"",
+		"watch": "concurrently \"npm:watch:*:nodemon\"",
 		"min:css": "node task/cssmin.js",
 		"min:image": "node task/imagemin.js",
 		"min:css+image": "del /s npm-debug.log.* && npm run deploy:css && npm run deploy:image"

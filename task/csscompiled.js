@@ -1,16 +1,17 @@
+var sass = require('node-sass');
 var postcss = require('postcss');
 var scss = require('postcss-scss');
-var sass = require('@csstools/postcss-sass');
+// var sass = require('@csstools/postcss-sass');
 var autoPrefixer = require('autoprefixer');
 var sprite = require('postcss-sprites');
 var rebase = require('postcss-url');
-var fs = require('fs-extra');
+var fs = require('fs');
 var path = require('path');
 var cssmin = require('./cssmin');
 var imagesmin = require('./imagemin');
 var spriteGroups = [];
 var cssFile = getChangeFile('task/.changelog');
-var optsSass = { outputStyle: 'expanded' };
+var optsSass = { outputStyle: 'compact' };
 var optsNano = { preset: 'default' };
 var optsPrefixer = { browsers: ["last 1 versions", "> 5%"] };
 var optsRebase = {
@@ -93,7 +94,6 @@ var optsSprite = {
 
 };
 
-
 function getChangeFile(file) {
     return path.dirname(fs.readFileSync(file, 'utf-8'))
         .replace(/\"/g, '')
@@ -132,29 +132,48 @@ function cssProcess(cssFile) {
         sourcesContent: false,
         annotation: setMap(cssFile)
     };
-    var Processor = postcss([sass(optsSass), rebase(optsRebase), sprite(optsSprite), autoPrefixer(optsPrefixer)]);
+    var sassResult = sass.renderSync({
+        file: cssFile,
+        includePaths: [getPath(cssFile) + '/sass/'],
+        sourceMap: true,
+        sourceMapRoot: getPath(cssFile),
+        outFile: cssPath
+    })
+    var Processor = postcss([rebase(optsRebase), sprite(optsSprite), autoPrefixer(optsPrefixer)]);
 
-
+    
     console.log('==================================')
     console.log(cssPath + ' 產出中...')
 
-    Processor
-        .process(css, {
-            from: cssFile,
-            to: cssPath,
-            map: optsMap
-        })
-        .then(function(result) {
-            fs.writeFileSync(mapPath, result.map);
-            fs.writeFileSync(cssSourcePath, result.css);
+    // console.log(sassResult.css)
+    // console.log(sassResult.map.toString())
 
-            if (spriteGroups.length > 0) {
-                console.log('> 產出 ' + spriteGroups.length + ' 張 sprite!')
-                imagesmin([setSprite(cssFile) + '/'], false);
-            }
+    fs.writeFileSync(mapPath, sassResult.map);
+    fs.writeFileSync(cssPath, sassResult.css);
 
-            cssmin(cssSourcePath);
-        });
+    console.log(cssPath + ' 完成...')
+    
+    // fs.writeFileSync(mapPath, result.map);
+    // fs.writeFileSync(cssPath, result.css);
+    // Processor
+    //     .process(css, {
+    //         syntax: scss,
+    //         from: cssFile,
+    //         to: cssPath,
+    //         map: optsMap
+    //     })
+    //     .then(function(result) {
+    //         fs.writeFileSync(mapPath, result.map);
+    //         // fs.writeFileSync(cssSourcePath, result.css);
+    //         fs.writeFileSync(cssPath, result.css);
+
+    //         if (spriteGroups.length > 0) {
+    //             console.log('> 產出 ' + spriteGroups.length + ' 張 sprite!')
+    //             imagesmin([setSprite(cssFile) + '/'], false, 'css');
+    //         }
+
+    //         // cssmin(cssSourcePath);
+    //     });
 }
 
 process.on('unhandledRejection', function(reason, p) {
@@ -162,10 +181,11 @@ process.on('unhandledRejection', function(reason, p) {
     console.log('原因 => ' + reason);
 })
 
-fs.stat(cssFile, function(error, data) {
-    if (error) {
-        return
-    }
-})
-
-cssProcess(cssFile);
+if (cssFile) {
+    fs.stat(cssFile, function(error, data) {
+        if (!error) {
+            cssProcess(cssFile)
+            // console.log(cssFile)
+        }
+    })
+}

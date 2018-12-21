@@ -46,6 +46,7 @@ function cssmin(cssSourcePath, self) {
         } else {
             if (!self) {
                 console.log('> style 產出完成! 待 CSS 存檔後再啟動...');
+                fs.writeFileSync('task/.changelog', '');
             } else {
                 console.log('CSS 壓縮完成!')
             }
