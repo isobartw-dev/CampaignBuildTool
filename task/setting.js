@@ -10,7 +10,7 @@ var regKey = new Registry({ // new operator is optional
 exports = module.exports = {};
 exports.setImgDir = function() {
     var outPutDir;
-    var file = [path.dirname(__dirname) + '/package.json', path.dirname(__dirname) + '/task/watch-image.js'];
+    var files = [path.dirname(__dirname) + '/package.json', path.dirname(__dirname) + '/task/watch-image.js'];
 
     function writePath(files, outputDir) {
         files.forEach(function(item, index, arr) {
@@ -35,7 +35,7 @@ exports.setImgDir = function() {
                     for (var i = 0; i < items.length; i++) {
                         if (items[i].name == 'Desktop') {
                             outputDir = items[i].value;
-                            writePath(files)
+                            writePath(files, outputDir)
                         }
                     }
                 }

@@ -2,7 +2,7 @@ node_modules/
 .vscode/
 css/
 images/
-mobile/
+mobile
 font/
 source-map/
 *.html
