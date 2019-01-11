@@ -1,4 +1,4 @@
-var fs = require('fs');
+var fs = require('fs-extra');
 var glob = require('glob');
 var execPort = require('child_process').exec;
 var path = require('path');
@@ -15,7 +15,7 @@ function newItem(path, name, type) {
 			fs.stat(path + name, function(err, stats) {
 				if (err) {
 					if (err.code === 'ENOENT') {
-						fs.mkdirSync(path + name);
+						fs.mkdirsSync(path + name);
 						console.log(sort + ' | 建立 ' + path + name);
 					}
 				} else {
@@ -31,7 +31,7 @@ function newItem(path, name, type) {
 						if (error.code === 'ENOENT') {
 							switch (type){
 								case 'folder':
-									fs.mkdirSync(path + item);
+									fs.mkdirsSync(path + item);
 									break;
 								case 'copy':
 									fs.stat(path + item.split('-')[0] + '.css', function(error){
@@ -67,7 +67,7 @@ cssFolder.forEach(function(path, index, array) {
 
 	fs.stat('source-map', function (error, stats) {
 		if (error) {
-			fs.mkdirSync('source-map');
+			fs.mkdirsSync('source-map');
 		}
 
 		newItem('source-map/', path, 'folder');
