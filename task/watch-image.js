@@ -28,7 +28,11 @@ nodemon.once('start', function() {
 })
 
 function getFile(files) {
-    files = files[0].slice(1);
-    var dirname = process.cwd().slice(1) + '\\';
-    return files.replace(dirname, '');
+    if (files[0].indexOf(':') > -1) {
+        return files[0];
+    } else {
+        files = files[0].slice(1);
+        var dirname = process.cwd().slice(1) + '\\';
+        return files.replace(dirname, '');
+    }
 }

@@ -6,7 +6,7 @@ var rebase = require('postcss-url');
 var nano = require('cssnano');
 var fs = require('fs');
 var path = require('path');
-var cssmin = require('./cssmin');
+// var cssmin = require('./cssmin');
 var imagesmin = require('./imagemin');
 var spriteGroups = [];
 var cssFile = getChangeFile('task/.changelog');
@@ -151,7 +151,6 @@ function cssProcess(cssFile) {
             map: optsMap
         })
         .then(function(result) {
-            // result.map._sourceRoot = 'css';
 
             fs.writeFileSync(mapPath, result.map);
             fs.writeFileSync(cssPath, result.css);

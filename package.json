@@ -6,8 +6,7 @@
 		"autoprefixer": "^8.2.0",
 		"browser-sync": "^2.23.6",
 		"concurrently": "^4.1.0",
-		"cssnano": "latest",
-		"chokidar": "git+ssh://git@github.com:isobartw-dev/chokidar.git",
+		"cssnano": "^4.1.10",
 		"dev-ip": "1.0.1",
 		"fs-extra": "^7.0.1",
 		"imagemin": "5.3.1",
@@ -17,12 +16,11 @@
 		"imagemin-svgo": "5.2.2",
 		"ngrok": "^2.3.0",
 		"node-sass": "^4.11.0",
-		"nodemon": "^1.18.9",
-		"onchange": "^5.2.0",
-		"postcss": "^7.0",
+		"nodemon": "^1.18.10",
+		"postcss": "^7.0.14",
 		"postcss-sprites": "4.2.1",
 		"postcss-url": "^8.0.0",
-		"sharp": "^0.21.0",
+		"sharp": "^0.21.3",
 		"tiny-sprintf": "latest",
 		"winreg": "1.2.2"
 	},
@@ -40,11 +38,11 @@
 	"license": "ISC",
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/isobartw-dev/CampaignBuildTool.git"
+		"url": "git+https://github.com/isobartw-dev/project-dev-tool.git"
 	},
 	"author": "ISOBAR_TW-frontend",
 	"bugs": {
-		"url": "https://github.com/isobartw-dev/CampaignBuildTool.git/issues"
+		"url": "https://github.com/isobartw-dev/project-dev-tool.git/issues"
 	},
-	"homepage": "https://github.com/isobartw-dev/CampaignBuildTool.git#readme"
+	"homepage": "https://github.com/isobartw-dev/project-dev-tool.git#readme"
 }

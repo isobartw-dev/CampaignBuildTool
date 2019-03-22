@@ -27,13 +27,15 @@ fs.stat(path.dirname(__dirname) + '\\runIIS.wsf', function(error) {
                         }
                     })
                 } else {
-                    if (!port || !project) {
-                        log.writeIISData();
-                        port = log.get('port');
-                        project = log.get('project');
-                    }
-                    console.log(project + ' 快樂運行中');
-                    devUrl(port);
+                    // if (!port || !project) {
+                    //     log.writeIISData();
+                    //     port = log.get('port');
+                    //     project = log.get('project');
+                    // }
+                    // console.log(project + ' 快樂運行中');
+                    // devUrl(port);
+
+                    console.log('IIS 運行中，要運行本專案請先停止目前運行的IIS');
                 }
             }
         })

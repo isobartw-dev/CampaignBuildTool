@@ -11,13 +11,20 @@ function cssminProcessor(cssSourcePath) {
     var css = fs.readFileSync(cssSourcePath);
     var cssPath = cssSourcePath.replace('-edit', '');
     var cssSourcePath = cssSourcePath.replace('-edit', '-source');
+    var mapPath = 'source-map/'+ cssPath;
+    var optsMap = {
+        inline: false,
+        annotation: path.relative(cssPath, mapPath)
+    };
+
 
     fs.writeFileSync(cssSourcePath, css);
 
     Processor
         .process(css, {
             from: cssSourcePath,
-            to: cssPath
+            to: cssPath,
+            map: optsMap
         })
         .then(function(result) {
             fs.writeFileSync(mapPath, result.map);

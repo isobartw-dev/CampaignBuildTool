@@ -6,8 +6,7 @@ var imagesmin = require('./imagemin');
 var minTime = require('./log').get('image');
 var sourcePath = getChangeFile('task/.changelog');
 var imgFolder = glob.sync('**/images/', { matchBase: true, ignore: 'node_modules/**' }).reverse();
-
-// console.log(minTime, String(fs.statSync(sourcePath).atime).slice(4, 24))
+var allFiles;
 
 function getChangeFile(changelog) {
     var data = fs.readFileSync(changelog, 'utf-8');
@@ -50,7 +49,41 @@ function goFolder(files, callback) {
     };
 };
 
+function convert(convFiles, i) {
+    // console.log(files, i);
+    if (convFiles.length > i) {
+        var file = convFiles[i];
+        var ext = file.indexOf('@') > -1 ? file.slice(-10, -7) : file.slice(-7, -4);
+        var convFile = file.replace('_' + ext, '').slice(0, -4) + '.' + ext;
+
+        sharp(sourcePath + file).jpeg({
+            quality: 100
+        }).toFile(sourcePath + convFile, function(error, info) {
+            allFiles.push(convFile);
+            console.log('> ' + file + ' 已轉檔為' + ext);
+            fs.stat(sourcePath + file, function(error, stats) {
+                if (error == null) {
+                    fs.unlinkSync(sourcePath + file);
+                };
+                convert(convFiles, i);
+            });
+        });
+        i++;
+    } else {
+        goFolder(allFiles, function(sourcePath, file, goPath) {
+            fs.stat(sourcePath + file, function(error, stats) {
+                if (error == null) {
+                    fs.unlinkSync(sourcePath + file);
+                } else {
+                    console.log('電腦秀逗惹~等等他');
+                };
+            });
+        });
+    };
+};
+
 function imagefolder(sourcePath) {
+
     fs.readdir(sourcePath, (error, files) => {
         if (/_tmp/.test(files.toString())) {
             return this;
@@ -60,44 +93,11 @@ function imagefolder(sourcePath) {
             var convFiles = files.filter(function(file) {
                 return file.indexOf('_jpg') > -1;
             });
-            var allFiles = files.filter(function(file) {
+            allFiles = files.filter(function(file) {
                 return file.indexOf('_jpg') === -1;
             });
             var i = 0;
-            isFinish = false;
-
-            function convert(convFiles, i) {
-                // console.log(files, i);
-                if (convFiles.length > i) {
-                    var file = convFiles[i];
-                    var ext = file.indexOf('@') > -1 ? file.slice(-10, -7) : file.slice(-7, -4);
-                    var convFile = file.replace('_' + ext, '').slice(0, -4) + '.' + ext;
-
-                    sharp(sourcePath + file).jpeg({
-                        quality: 100
-                    }).toFile(sourcePath + convFile, function(error, info) {
-                        allFiles.push(convFile);
-                        console.log('> ' + file + ' 已轉檔為' + ext);
-                        fs.stat(sourcePath + file, function(error, stats) {
-                            if (error == null) {
-                                fs.unlinkSync(sourcePath + file);
-                            };
-                            convert(convFiles, i);
-                        });
-                    });
-                    i++;
-                } else {
-                    goFolder(allFiles, function(sourcePath, file, goPath) {
-                        fs.stat(sourcePath + file, function(error, stats) {
-                            if (error == null) {
-                                fs.unlinkSync(sourcePath + file);
-                            } else {
-                                console.log('電腦秀逗惹~等等他');
-                            };
-                        });
-                    });
-                };
-            };
+            
             convert(convFiles, i);
         };
     });
@@ -115,7 +115,6 @@ process.on('exit', (code) => {
 if (sourcePath) {
     fs.stat(sourcePath, function(error, data) {
         if (!error && Date.parse(minTime) < fs.statSync(sourcePath).atime) {
-            // console.log(sourcePath)
             imagefolder(sourcePath)
         }
     })

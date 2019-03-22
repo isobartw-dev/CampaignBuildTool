@@ -1,5 +1,6 @@
 var fs = require('fs');
 var path = require('path');
+var os = require('os');
 var glob = require('glob');
 var imagemin = require('imagemin');
 var pngquant = require('imagemin-pngquant');
@@ -9,6 +10,26 @@ var svgo = require('imagemin-svgo');
 var sprintf = require('tiny-sprintf');
 var log = require('./log');
 var imgFolder = glob.sync('**/images/', { matchBase: true, ignore: ['node_modules/**', '**/images/sprite/'] });
+var minTime = log.get('image');
+var tempDir = os.tmpdir();
+var tempConverDir = fs.mkdtempSync(`${tempDir}`);
+var stringSize = 0;
+var imageType = {
+    png: [],
+    jpg: [],
+    gif: [],
+    svg: []
+};
+var imageSize = {
+    pc: {
+        origin: [],
+        min: []
+    },
+    mobile: {
+        origin: [],
+        min: []
+    }
+};
 
 function getSum(total, num) {
     return total + num;
@@ -23,7 +44,7 @@ function sizeUnit(size) {
     return size;
 };
 
-function optimizeCallbak(input, output, sort) {
+function optimizeCallbak(sourceSize, output, sort) {
     return function(error, stat) {
         if (error) {
             reject(error);
@@ -52,12 +73,14 @@ function optimizeCallbak(input, output, sort) {
                 imageSize.pc.min.push(outputSize);
             }
 
-            console.log(sprintf("%'.-6s | %'.-" + stringSize + "s %-10s %s %-10s %2s %-10s", sort, path.basename(output), sizeUnit(source), ' - ', sizeUnit(source - outputSize), ' => ', sizeUnit(outputSize)));
+            console.log(sprintf("%'.-6s | %'.-" + stringSize + "s %-10s %s %-10s %2s %-10s", sort, path.basename(output), sizeUnit(sourceSize), ' - ', sizeUnit(sourceSize - outputSize), ' => ', sizeUnit(outputSize)));
         }
     }
 };
 
 function optimize(input, files, task, options = { pc, mobile, sort }) {
+    console.log('圖片壓縮中...');
+
     var minImages = [];
 
     for (var i = 0; i < files.length; i++) {
@@ -78,70 +101,61 @@ function optimize(input, files, task, options = { pc, mobile, sort }) {
         }
     };
 
-    imagemin(files, input, {
-        plugins: [
-            pngquant({
-                quality: '80-100'
-            }),
-            jpegrecompress({
-                quality: 'veryhigh',
-                method: 'smallfry',
-                min: 80,
-                loops: 3
-            }),
-            gifsicle({
-                interlaced: true,
-                optimizationLevel: 3
-            }),
-            svgo({
-                removeViewBox: false
-            })
-        ]
-    }).then(files => {
-        log.writeTime();
+    (async () => {
+        imagemin(files, tempConverDir, {
+            plugins: [
+                pngquant({
+                    quality: [0.7, 0.95]
+                }),
+                jpegrecompress({
+                    quality: 'veryhigh',
+                    method: 'smallfry',
+                    min: 80,
+                    loops: 3
+                }),
+                gifsicle({
+                    interlaced: true,
+                    optimizationLevel: 3
+                }),
+                svgo({
+                    removeViewBox: false
+                })
+            ]
+        }).then(function(converFiles) {
+            log.writeTime();
 
-        if (minImages.length != 0 && !task){
-            console.log('==================================')
-        }
-
-        for (var i = 0; i < files.length; i++) {
-            var outputFile = files[i].path;
-
-            if (options) {
-                var sourceSize = input.indexOf('mobile') > -1 ? mobile[i] : pc[i];
-
-                fs.stat(outputFile, optimizeCallbak(sourceSize, outputFile, options.sort));
-            } else {
-                var minImagesMinSize = sizeUnit(fs.statSync(outputFile)['size']);
-                var minImagesSaveSize = sizeUnit(minImages[i] - fs.statSync(outputFile)['size']);
-
-                console.log(outputFile + ' ' + sizeUnit(minImages[i]) + ' 壓縮了 ' + minImagesSaveSize +
-                    ' => ' + minImagesMinSize);
+            if (minImages.length != 0 && !task) {
+                console.log('==================================')
             }
-        }
-    });
+
+            for (var i = 0; i < converFiles.length; i++) {
+                var outputFile = converFiles[i].path;
+
+                if (options) {
+                    var sourceSize = input.indexOf('mobile') > -1 ? mobile[i] : pc[i];
+
+                    fs.stat(outputFile, optimizeCallbak(sourceSize, outputFile, options.sort));
+                } else {
+                    var minImagesMinSize = sizeUnit(fs.statSync(outputFile)['size']);
+                    var minImagesSaveSize = sizeUnit(minImages[i] - fs.statSync(outputFile)['size']);
+
+                    console.log(path.basename(outputFile) + ' ' + sizeUnit(minImages[i]) + ' 壓縮了 ' + minImagesSaveSize +
+                        ' => ' + minImagesMinSize);
+                }
+            }
+
+            var tempConverFiles = fs.readdirSync(tempConverDir);
+
+            tempConverFiles.forEach(function(file, index, array) {
+                fs.copyFileSync(path.join(tempConverDir, file), path.join(input, file));
+
+                fs.unlinkSync(path.join(tempConverDir, file));
+            })
+        })
+    })();
 }
 
 function imagesmin(imgFolder, self, task) {
-    var minTime = log.get('image');
-    var stringSize = 0;
-    var imageType = {
-        png: [],
-        jpg: [],
-        gif: [],
-        svg: []
-    };
-    var imageSize = {
-        pc: {
-            origin: [],
-            min: []
-        },
-        mobile: {
-            origin: [],
-            min: []
-        }
-    };
-
     imgFolder.forEach(function(item, index, arr) {
         var input = item;
         var sort = input.replace(/(\/images|images)\//g, '').indexOf('mobile') > -1 ? input.replace(/(\/images|images)\//g, '') : 'pc';
