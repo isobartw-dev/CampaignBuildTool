@@ -8,7 +8,6 @@
 
 - 請升級至 Node Ver.10 以上
 - 更名後 v1.0、v2.0 的 package.json 請更改 `repository` `bugs` `homepage` 的網址
-- v2.0 更新項目
 - 使用 v1.0 precss 開發的專案，請下載 v1.0 版本至專案使用 (之後會停用)
 
 ## 功能
