@@ -23,7 +23,8 @@
     "sharp": "^0.21.3",
     "stylelint": "^9.10.1",
     "stylelint-config-sass-guidelines": "^5.3.0",
-    "stylelint-selector-pattern": "0.0.2",
+	"stylelint-selector-pattern": "0.0.2",
+	"stylelint-config-rational-order":"^0.0.4",
     "tiny-sprintf": "latest",
     "winreg": "1.2.2"
   },
@@ -43,7 +44,23 @@
     "plugins": "stylelint-selector-pattern",
     "rules": {
       "selector-class-pattern": null,
-      "order/properties-alphabetical-order": null,
+	  "order/properties-alphabetical-order": null,
+	  "order/order": [
+		"custom-properties",
+		"dollar-variables",
+		{
+		  "type": "at-rule",
+		  "name": "include"
+		},
+		{
+		  "type": "at-rule",
+		  "name": "include",
+		  "hasBlock": true
+		},
+		"declarations",
+		"rules",
+		"at-rules"
+	  ],
       "xi/selector-pattern": [
         "^{block}({element})?({modifier})?({pseudo})?$",
         {
