@@ -9,10 +9,7 @@
 - 請升級至 Node Ver.10 以上
 - 更名後 v1.0、v2.0 的 package.json 請更改 `repository` `bugs` `homepage` 的網址
 - v2.0 更新項目
-  - 使用 node-sass 取代 precss
-  - 增加 source-map 放置 map 檔案
-  - dev 指令可自動偵測 IIS 是否啟動
-- 使用 v1.0 precss 開發的專案，請下載 v1.0 版本至專案使用(之後會修改用法)
+- 使用 v1.0 precss 開發的專案，請下載 v1.0 版本至專案使用 (之後會停用)
 
 ## 功能
 
@@ -80,9 +77,7 @@ source-map/
 - CSS 合併、最佳化、壓縮
 - Photoshop 輸出圖片自動歸檔至專案資料夾
 
-## 使用
 
-1. 請先安裝 [Node.js][d51f406f]、 [git for Window][2502918c]、[InitBuildTool][3] (sublime text)
 2. clone 此工具包或 git pull 更新工具包
 3. Sublime Text 執行 InitBuildTool
 
