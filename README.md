@@ -78,7 +78,6 @@ source-map/
 - Photoshop 輸出圖片自動歸檔至專案資料夾
 
 
-1. 請先安裝 [Node.js][d51f406f]、 [git for Window][2502918c]、[InitBuildTool][3] (sublime text
 2. clone 此工具包或 git pull 更新工具包
 3. Sublime Text 執行 InitBuildTool
 
@@ -87,6 +86,13 @@ source-map/
 [3]: https://github.com/isobartw-dev/InitBuildTool 'InitBuildTool'
 
 #### 指令
+
+`install package` - 安裝 package.json 專案需要的 package，並且產生自動化需要的檔案及資料夾  
+`update package` - 更新 package  
+`runIIS` - 產生本機網站(localhost)  
+`watch` - 圖片規檔(watch:image)、編譯 CSS 產生 sprite(watch:css)  
+`dev` - 開發、抓蟲模式(結合 watch 指令)  
+`min` - commit 前圖檔(min:image)、CSS(min:css) 最佳化
 
 #### 圖檔命名規則
 
