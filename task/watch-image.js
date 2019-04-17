@@ -4,7 +4,7 @@ var fs = require('fs');
 var imageFolder = glob.sync('**/images/', {matchBase: true, ignore: ['node_modules/**', 'source-map/**']});
 var imageFolderIgnore = ['*/sprite/'];
 
-imageFolder.push('E:\\Snow.Huang\\My documents\\Desktop\\Output\\*.png');
+imageFolder.push('[desktop]');
 
 nodemon({
   runOnChangeOnly: true,
@@ -19,7 +19,7 @@ nodemon({
 
 nodemon
   .once('start', function () {
-    console.log('watch:image ??');
+    console.log('watch:image 啟動');
   })
   .on('restart', function (files) {
     // console.log('[change] ' + getFile(files))

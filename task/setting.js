@@ -7,11 +7,10 @@ var regKey = new Registry({
   hive: Registry.HKCU, // open registry hive HKEY_CURRENT_USER
   key: '\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\User Shell Folders\\' // key containing autostart programs
 });
+var files = [path.dirname(__dirname) + '/task/watch-image.js'];
 
 exports = module.exports = {};
 exports.setImgDir = function () {
-  var files = [path.dirname(__dirname) + '/task/watch-image.js'];
-
   function writePath (files, outputDir) {
     files.forEach(function (item, index, arr) {
       var read = fs.readFileSync(item).toString();
@@ -41,7 +40,22 @@ exports.setImgDir = function () {
       var outputDir = os.homedir() + '\\desktop\\output';
       writePath(files, outputDir);
     }
+    console.log('Output 資料夾位置設定完成');
+  });
+};
+exports.clearSet = function () {
+  files.forEach(function (item, index, arr) {
+    var read = fs
+      .readFileSync(item)
+      .toString()
+      .split('\n');
+    var line = read.findIndex(function (value, index, obj) {
+      return value.indexOf('imageFolder.push') > -1;
+    });
+
+    read.splice(line, 1, "imageFolder.push('[desktop]');\r");
+    fs.writeFileSync(item, read.join('\n'), 'utf8');
   });
 
-  console.log('Output資料夾位置設定完成');
+  console.log('清空 Output 資料夾位置');
 };

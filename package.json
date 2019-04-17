@@ -36,6 +36,7 @@
   },
   "scripts": {
     "prepublish": "node task/init.js",
+    "release": "node task/pre-release.js",
     "runIIS": "node task/runIIS.js",
     "dev": "concurrently \"npm run watch:*\" \"node task/browsersync.js\"",
     "watch:css": "node task/watch-css.js",
