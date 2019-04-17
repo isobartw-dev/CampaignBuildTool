@@ -5,36 +5,31 @@ exports = module.exports = {};
 exports.writeTime = function () {
   fs.stat('task/log.txt', function (err, stat) {
     var endTime = String(new Date().toString()).slice(4, 24);
-    var createLog = fs.createWriteStream('task/log.txt');
+    var data = '[image]\t' + endTime;
+
     if (err == null) {
-      var readLog = fs.readFileSync('task/log.txt').toString();
+      var readLog = fs
+        .readFileSync('task/log.txt')
+        .toString()
+        .split('\r');
+
       if (readLog) {
-        var readLine = readLog.split('\r');
-        if (readLine.toString().indexOf('[image]') > -1) {
-          readLine.filter(function (line, index, arr) {
-            if (line.indexOf('[image]') > -1) {
-              return arr.splice(index, 1, '[image]\t' + endTime);
-            } else {
-              return arr;
-            }
-          });
-        } else {
-          readLine.push('[image]\t' + endTime);
-        }
-        fs.truncate('task/log.txt', 0, function () {
-          readLine.forEach(function (line, index, arr) {
-            if (index + 1 === arr.length) {
-              fs.appendFileSync('task/log.txt', line);
-            } else {
-              fs.appendFileSync('task/log.txt', line + '\r');
-            }
-          });
+        var line = readLog.findIndex(function (value, index, obj) {
+          return value.indexOf('[image]') > -1;
         });
-      } else {
-        createLog.write('[image]\t' + endTime);
+
+        // console.log(line);
+
+        if (line !== -1) {
+          readLog.splice(line, 1, data);
+          fs.writeFileSync('task/log.txt', readLog.join('\r'), 'utf8');
+        } else {
+          fs.appendFileSync('task/log.txt', data + '\r');
+        }
       }
     } else if (err.code === 'ENOENT') {
-      createLog.write('[image]\t' + endTime);
+      var createLog = fs.createWriteStream('task/log.txt');
+      createLog.write(data);
     }
     console.log('時間戳記已寫入');
   });
@@ -55,22 +50,26 @@ exports.writeIISData = function () {
           .toString()
           .split('\r');
 
-        console.log(readLog);
+        // console.log(readLog, type);
 
         if (readLog) {
-          if (readLog.indexOf(type) === -1) {
-            fs.appendFileSync('task/log.txt', '\r' + data);
+          var line = readLog.findIndex(function (value, index, obj) {
+            return value.indexOf(type) > -1;
+          });
+
+          // console.log(line);
+
+          if (line !== -1) {
+            readLog.splice(line, 1, data);
+            fs.writeFileSync('task/log.txt', readLog.join('\r'), 'utf8');
+          } else {
+            fs.appendFileSync('task/log.txt', data + '\r');
           }
-        } else {
-          fs.appendFileSync('task/log.txt', data);
         }
       } else if (error.code === 'ENOENT') {
         var createLog = fs.createWriteStream('task/log.txt');
-
         createLog.write(data);
       }
-
-      console.log(message);
     });
   }
 
