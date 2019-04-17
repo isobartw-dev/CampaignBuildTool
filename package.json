@@ -10,6 +10,10 @@
     "dev-ip": "1.0.1",
     "eslint": "^5.16.0",
     "eslint-config-standard": "^12.0.0",
+    "eslint-plugin-import": "^2.17.2",
+    "eslint-plugin-node": "^8.0.1",
+    "eslint-plugin-promise": "^4.1.1",
+    "eslint-plugin-standard": "^4.0.0",
     "fs-extra": "^7.0.1",
     "imagemin": "^6.1.0",
     "imagemin-gifsicle": "^6.0.0",
@@ -33,13 +37,13 @@
   "scripts": {
     "prepublish": "node task/init.js",
     "runIIS": "node task/runIIS.js",
-    "dev": "concurrently \"npm run watch:css\" \"node task/browsersync.js\"",
+    "dev": "concurrently \"npm run watch:*\" \"node task/browsersync.js\"",
     "watch:css": "node task/watch-css.js",
     "watch:image": "node task/watch-image.js",
     "watch": "concurrently \"npm:watch:*\"",
     "min:css": "node task/cssmin.js",
     "min:image": "node task/imagemin.js",
-    "min:css+image": "del /s npm-debug.log.* && npm run deploy:css && npm run deploy:image"
+    "min:css+image": "del /s npm-debug.log.* && npm run min:css && npm run min:image"
   },
   "stylelint": {
     "extends": [
@@ -286,6 +290,7 @@
       "**/css/style-*.css",
       "./css/**/base.scss",
       "./css/**/editor.scss",
+      "**/sass/reset.*",
       "**/sass/base.scss"
     ]
   },
@@ -505,7 +510,17 @@
       "es6": true,
       "node": true
     },
-    "extends": "eslint-config-standard"
+    "extends": "eslint-config-standard",
+    "rules": {
+      "object-curly-spacing": [
+        "error",
+        "never"
+      ],
+      "semi": [
+        "error",
+        "always"
+      ]
+    }
   },
   "eslintIgnore": [
     "**/node_modules/**"

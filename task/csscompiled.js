@@ -5,18 +5,17 @@ var sprite = require('postcss-sprites');
 var rebase = require('postcss-url');
 var stylelint = require('stylelint');
 var nano = require('cssnano');
-var glob = require('glob');
+// var glob = require('glob');
 var fs = require('fs');
 var path = require('path');
 var imagesmin = require('./imagemin');
 var spriteGroups = [];
 var file = fs.readFileSync('task/.changelog', 'utf-8');
 var mainFile = changeFile('task/.changelog');
-var styleFile = styleFile('task/.changelog');
 var optsNano = {preset: 'default'};
 var optsPrefixer = {browsers: ['last 1 versions', '> 5%']};
 var optsRebase = {
-  url: function(asset, dir) {
+  url: function (asset, dir) {
     var fileParse = asset.url.split('/');
     var imagePath = path.posix.resolve(dir.to, fileParse.slice(1).join('/'));
     var cssPath = path.posix.resolve(dir.to);
@@ -29,24 +28,24 @@ var optsSprite = {
   spritePath: './' + dirPath(mainFile).split('css')[0] + 'images',
   basePath: './' + dirPath(mainFile).split('css')[0],
   // verbose: true,
-  groupBy: function(image) {
-    spriteGroup = image.url
+  groupBy: function (image) {
+    var spriteGroup = image.url
       .split('_')[1]
       .toString()
       .slice(0, -4);
     if (image.url.indexOf(spriteGroup) === -1) {
-      return Promise.reject();
+      return Promise.reject(new Error('something bad happened'));
     }
     return Promise.resolve(spriteGroup);
   },
-  filterBy: function(image) {
+  filterBy: function (image) {
     if (!/sprite/.test(image.url)) {
-      return Promise.reject();
+      return Promise.reject(new Error('something bad happened'));
     }
     return Promise.resolve();
   },
   hooks: {
-    onUpdateRule: function(rule, token, image) {
+    onUpdateRule: function (rule, token, image) {
       var backgroundSizeX = (image.spriteWidth / image.coords.width) * 100;
       var backgroundSizeY = (image.spriteHeight / image.coords.height) * 100;
       var backgroundPositionX = (image.coords.x / (image.spriteWidth - image.coords.width)) * 100;
@@ -82,11 +81,11 @@ var optsSprite = {
         .cloneAfter(backgroundPosition)
         .cloneAfter(backgroundSize);
 
-      if (backgroundPositionX == 0 || backgroundPositionY == 0) {
+      if (backgroundPositionX === 0 || backgroundPositionY === 0) {
         token.cloneAfter(backgroundRepeat);
       }
     },
-    onSaveSpritesheet: function(opts, spritesheet) {
+    onSaveSpritesheet: function (opts, spritesheet) {
       spriteGroups.push(spritesheet.groups);
       var fileName = spritesheet.groups.concat(spritesheet.extension);
       return path.join(opts.spritePath, fileName.join('.'));
@@ -98,14 +97,14 @@ var optsSprite = {
 };
 var success = false;
 
-function changeFile(file) {
+function changeFile (file) {
   var apart = path
     .dirname(fs.readFileSync(file, 'utf-8'))
-    .replace(/\"/g, '')
+    .replace(/\\"/g, '')
     .split('\\');
   var sassIndex = apart.indexOf('sass');
   var cssIndex = apart.indexOf('css');
-  var hasCss = cssIndex > -1 ? true : false;
+  var hasCss = cssIndex > -1;
 
   if (hasCss) {
     apart.splice(sassIndex, apart.length);
@@ -115,67 +114,49 @@ function changeFile(file) {
   return apart.join('/') + '/style-edit.css';
 }
 
-function styleFile(file) {
-  var apart = path
-    .dirname(fs.readFileSync(file, 'utf-8'))
-    .replace(/\"/g, '')
-    .split('\\');
-  var sassIndex = apart.indexOf('sass');
-  var cssIndex = apart.indexOf('css');
-  var hasCss = cssIndex > -1 ? true : false;
-
-  if (hasCss) {
-    apart.splice(sassIndex, apart.length);
-  } else {
-    apart.splice(sassIndex, apart.length, 'css');
-  }
-  return apart.join('/') + '/style.css';
-}
-
-function dirPath(file) {
+function dirPath (file) {
   return path.dirname(file);
 }
 
-function spritePath(cssFile) {
+function spritePath (cssFile) {
   var cssPath = dirPath(cssFile);
   var spritePath = (cssPath + '/images').replace('css/', '');
   return spritePath;
 }
 
-function mapAnnotation(cssFile) {
+function mapAnnotation (cssFile) {
   var cssPath = dirPath(cssFile);
   var mapPath = 'source-map/' + cssPath + '/style.css.map';
   return path.relative(cssPath, mapPath).replace(/\\/g, '/');
 }
 
-function lintCheck(cssFile) {
+function lintCheck (cssFile) {
   stylelint
     .lint({
       code: fs.readFileSync(cssFile, 'utf-8'),
       codeFilename: cssFile,
       formatter: 'string'
     })
-    .then(function(data) {
-      if (data.errored == true) {
+    .then(function (data) {
+      if (data.errored === true) {
         console.log(data.output);
       } else {
         console.log('stylelint 驗證完成!');
-        console.log(styleFile, mainFile, file);
+        // console.log(styleFile, mainFile, file);
         compile(mainFile);
       }
     })
-    .catch(function(err) {
+    .catch(function (err) {
       // do things with err e.g.
       console.error(err.stack);
     });
 }
 
-function compile(cssFile) {
-  var css = fs.readFileSync(cssFile, 'utf-8');
+function compile (cssFile) {
   var cssPath = dirPath(cssFile) + '/style.css';
   var cssSourcePath = dirPath(cssFile) + '/style-source.css';
   var mapPath = mapAnnotation(cssFile).replace(/\.\.\//g, '');
-  var sassPath = function(file) {
+  var sassPath = function (file) {
     var apart = dirPath(file).split(path.sep);
     var sassIndex = apart.indexOf('sass');
 
@@ -208,7 +189,7 @@ function compile(cssFile) {
     from: cssFile,
     to: cssPath,
     map: optsMap
-  }).then(function(result) {
+  }).then(function (result) {
     fs.writeFileSync(mapPath, result.map);
     fs.writeFileSync(cssPath, result.css);
 
@@ -222,11 +203,11 @@ function compile(cssFile) {
 }
 
 process
-  .on('unhandledRejection', function(reason, p) {
+  .on('unhandledRejection', function (reason, p) {
     console.log('有無法處裡的錯誤 => ' + p);
     console.log('原因 => ' + reason);
   })
-  .on('exit', function() {
+  .on('exit', function () {
     if (success) {
       console.log('> style 產出完成! 待 CSS 存檔後再啟動...');
     } else {
@@ -236,7 +217,7 @@ process
   });
 
 if (file) {
-  fs.stat(mainFile, function(error, data) {
+  fs.stat(mainFile, function (error, data) {
     if (!error) {
       lintCheck(file);
     }
