@@ -22,7 +22,6 @@ images/
 css/
 |– style.css
 
-
 sass/
 |
 |– utilities/
@@ -77,6 +76,7 @@ source-map/
 - Photoshop 輸出圖片自動歸檔至專案資料夾
 
 ## 使用
+
 1. 請先安裝 [Node.js][d51f406f]、 [git for Window][2502918c]、[InitBuildTool][3]
 2. clone 此工具包或 git pull 更新工具包
 3. Sublime Text 執行 InitBuildTool

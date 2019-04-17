@@ -1,82 +1,79 @@
 var fs = require('fs');
 var path = require('path');
-var readline = require('readline');
 
 exports = module.exports = {};
-exports.writeTime = function() {
-  fs.stat('task/log.txt', function(err, stat) {
+exports.writeTime = function () {
+  fs.stat('task/log.txt', function (err, stat) {
     var endTime = String(new Date().toString()).slice(4, 24);
+    var data = '[image]\t' + endTime;
+
     if (err == null) {
-      var readLog = fs.readFileSync('task/log.txt').toString();
+      var readLog = fs
+        .readFileSync('task/log.txt')
+        .toString()
+        .split('\r');
+
       if (readLog) {
-        var readLine = readLog.split('\r');
-        if (readLine.toString().indexOf('[image]') > -1) {
-          readLine.filter(function(line, index, arr) {
-            if (line.indexOf('[image]') > -1) {
-              return arr.splice(index, 1, '[image]\t' + endTime);
-            } else {
-              return arr;
-            }
-          });
-        } else {
-          readLine.push('[image]\t' + endTime);
-        }
-        fs.truncate('task/log.txt', 0, function() {
-          readLine.forEach(function(line, index, arr) {
-            if (index + 1 == arr.length) {
-              fs.appendFileSync('task/log.txt', line);
-            } else {
-              fs.appendFileSync('task/log.txt', line + '\r');
-            }
-          });
+        var line = readLog.findIndex(function (value, index, obj) {
+          return value.indexOf('[image]') > -1;
         });
-      } else {
-        var createLog = fs.createWriteStream('task/log.txt');
-        createLog.write('[image]\t' + endTime);
+
+        // console.log(line);
+
+        if (line !== -1) {
+          readLog.splice(line, 1, data);
+          fs.writeFileSync('task/log.txt', readLog.join('\r'), 'utf8');
+        } else {
+          fs.appendFileSync('task/log.txt', data + '\r');
+        }
       }
-    } else if (err.code == 'ENOENT') {
+    } else if (err.code === 'ENOENT') {
       var createLog = fs.createWriteStream('task/log.txt');
-      createLog.write('[image]\t' + endTime);
+      createLog.write(data);
     }
     console.log('時間戳記已寫入');
   });
 };
-exports.writeIISData = function() {
+exports.writeIISData = function () {
   var glob = require('glob');
   var dir = path.dirname(__dirname);
   var file = dir + '\\' + glob.sync('**/*.sln', {matchBase: true, ignore: 'node_modules/**'}).toString();
   var data = fs.readFileSync(file, 'utf8').split('\r');
 
-  function writeData(type, text, message) {
+  function writeData (type, text, message) {
     var data = '[' + type + ']\t' + text.split('"')[1].replace(/(\\|\/|\.\.\\|\.\.\/)/g, '');
 
-    fs.stat('task/log.txt', function(error, stat) {
+    fs.stat('task/log.txt', function (error, stat) {
       if (error == null) {
         var readLog = fs
           .readFileSync('task/log.txt')
           .toString()
           .split('\r');
 
-        console.log(readLog);
+        // console.log(readLog, type);
 
         if (readLog) {
-          if (readLog.indexOf(type) == -1) {
-            fs.appendFileSync('task/log.txt', '\r' + data);
-          }
-        } else {
-          fs.appendFileSync('task/log.txt', data);
-        }
-      } else if (error.code == 'ENOENT') {
-        var createLog = fs.createWriteStream('task/log.txt');
+          var line = readLog.findIndex(function (value, index, obj) {
+            return value.indexOf(type) > -1;
+          });
 
+          // console.log(line);
+
+          if (line !== -1) {
+            readLog.splice(line, 1, data);
+            fs.writeFileSync('task/log.txt', readLog.join('\r'), 'utf8');
+          } else {
+            fs.appendFileSync('task/log.txt', data + '\r');
+          }
+        }
+      } else if (error.code === 'ENOENT') {
+        var createLog = fs.createWriteStream('task/log.txt');
         createLog.write(data);
       }
-
-      console.log(message);
     });
   }
 
-  data.forEach(function(text, index, array) {
+  data.forEach(function (text, index, array) {
     if (text.match(/VWDPort/)) {
       writeData('port', text, '獲取 local port');
     } else if (text.match(/SlnRelativePath/)) {
@@ -84,11 +81,11 @@ exports.writeIISData = function() {
     }
   });
 };
-exports.get = function(sort) {
+exports.get = function (sort) {
   var readLog = fs.readFileSync('task/log.txt').toString();
   if (readLog) {
     var readLine = readLog.split('\r');
-    var get = readLine.find(function(item) {
+    var get = readLine.find(function (item) {
       return item.indexOf(sort) > -1;
     });
     if (get) {

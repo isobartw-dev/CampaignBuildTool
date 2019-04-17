@@ -3,38 +3,31 @@ var fs = require('fs');
 var execPort = require('child_process').exec;
 var browsersync = require('browser-sync');
 var ngrok = require('ngrok');
-var devip = require('dev-ip');
 var log = require('./log');
 var port = log.get('port');
-var project = log.get('project');
 
-fs.stat(path.dirname(__dirname) + '\\runIIS.wsf', function(error) {
+fs.stat(path.dirname(__dirname) + '\\runIIS.wsf', function (error) {
   if (error) {
     devUrl();
   } else {
-    execPort('tasklist /fi "imagename eq iisexpress.exe"', function(error, stdout, stderr) {
+    execPort('tasklist /fi "imagename eq iisexpress.exe"', function (error, stdout, stderr) {
+      if (error) {
+        console.log(error);
+      }
       if (stdout) {
         // console.log(stdout)
-        if (stdout.indexOf('iis') == -1) {
+        if (stdout.indexOf('iis') === -1) {
           console.log('沒有啟動IIS，我來幫你啟動IIS');
-          execPort('npm run runIIS', function(error, stdout, stderr) {
+          execPort('npm run runIIS', function (error, stdout, stderr) {
             if (error) {
               console.log(error);
             }
-          }).on('exit', function(code, signal) {
-            if (code == 0) {
+          }).on('exit', function (code, signal) {
+            if (code === 0) {
               devUrl(port);
             }
           });
         } else {
-          // if (!port || !project) {
-          //     log.writeIISData();
-          //     port = log.get('port');
-          //     project = log.get('project');
-          // }
-          // console.log(project + ' 快樂運行中');
-          // devUrl(port);
-
           console.log('IIS 運行中，確認目前運行的是否為本專案，如果不是，請先停止目前運行的IIS');
         }
       }
@@ -42,7 +35,7 @@ fs.stat(path.dirname(__dirname) + '\\runIIS.wsf', function(error) {
   }
 });
 
-function devUrl(getport) {
+function devUrl (getport) {
   ngrok.connect(
     {
       proto: 'http',
@@ -50,7 +43,10 @@ function devUrl(getport) {
       host_header: 'localhost',
       bind_tls: false
     },
-    function(err, url) {
+    function (err, url) {
+      if (err) {
+        console.log(err);
+      }
       console.log('測試用公用網址');
       console.log('[ngrok] ' + url);
       console.log('[ngrok mobile] ' + url + '/mobile/index.aspx');
@@ -61,7 +57,7 @@ function devUrl(getport) {
   );
   browsersync({
     proxy: getport ? 'localhost:' + getport : false,
-    server: getport ? false : true,
+    server: !getport,
     port: 3000,
     files: '**',
     watchOptions: {
@@ -77,7 +73,7 @@ function devUrl(getport) {
 }
 
 process.on('exit', code => {
-  if (code != 0) {
+  if (code !== 0) {
     console.log('有地方出錯! task已停止');
   }
 });
