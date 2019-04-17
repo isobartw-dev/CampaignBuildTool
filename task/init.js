@@ -2,7 +2,17 @@ var fs = require('fs-extra');
 var glob = require('glob');
 var imgFolder = glob.sync('**/images/', {matchBase: true, ignore: 'node_modules/**'});
 var cssFolder = glob.sync('**/css/', {matchBase: true, ignore: ['node_modules/**', 'source-map/**']});
-var cssNew = {dir: ['sass'], copy: ['style-edit.css']};
+var sassPath = cssFolder.map(function (value, index, array) {
+  if (value.split('/').length === 2) {
+    return value.replace('css', '');
+  } else {
+    return value.replace('css/', '');
+  }
+});
+var sassFolder = cssFolder.map(function (value, index, array) {
+  return value.replace('css', 'sass');
+});
+var sassNew = {dir: ['utilities', 'base', 'components', 'layout', 'pages', 'themes', 'vendors'], file: ['style-edit.scss']};
 var log = require('./log');
 var setting = require('./setting');
 
@@ -30,14 +40,8 @@ function newItem (path, name, type) {
                 case 'folder':
                   fs.mkdirsSync(path + item);
                   break;
-                case 'copy':
-                  fs.stat(path + item.split('-')[0] + '.css', function (error) {
-                    if (error) {
-                      fs.writeFileSync(path + item, '');
-                    } else {
-                      fs.renameSync(path + item.split('-')[0] + '.css', path + item);
-                    }
-                  });
+                case 'file':
+                  fs.createFileSync(path + item);
                   break;
               }
 
@@ -52,14 +56,20 @@ function newItem (path, name, type) {
   }
 }
 
+sassPath.forEach(function (path, index, array) {
+  newItem(path, 'sass', 'folder');
+
+  sassFolder.forEach(function (path, index, array) {
+    newItem(path, sassNew['dir'], 'folder');
+    newItem(path, sassNew['file'], 'file');
+  });
+});
+
 imgFolder.forEach(function (path, index, array) {
   newItem(path, 'sprite', 'folder');
 });
 
 cssFolder.forEach(function (path, index, array) {
-  newItem(path, cssNew['dir'], 'folder');
-  newItem(path, cssNew['copy'], 'copy');
-
   fs.stat('source-map', function (error, stats) {
     if (error) {
       fs.mkdirsSync('source-map');
