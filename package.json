@@ -283,7 +283,9 @@
           "initial": "^\\.{componentName}(?:-[a-z][a-zA-Z0-9]+){0,1}(?:--[a-z][a-zA-Z0-9]+){0,2}(?:\\[.+\\])?$",
           "combined": "^\\.[a-z][a-zA-Z0-9]+(?:-[a-z][a-zA-Z0-9]+){0,1}(?:--[a-z][a-zA-Z0-9]+){0,2}(?:\\[.+\\])?$"
         },
-        "implicitComponents": true
+        "utilitySelectors": "^\\.[a-z][a-zA-Z0-9]+(?:-[a-z0-9]){0,1}(?:[a-zA-Z0-9]+){0,1}?$",
+        "implicitComponents": true,
+        "implicitUtilities": "**/sass/base/*.scss"
       }
     },
     "ignoreFiles": [
