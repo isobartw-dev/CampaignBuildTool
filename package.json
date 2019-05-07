@@ -20,6 +20,7 @@
     "imagemin-jpeg-recompress": "^6.0.0",
     "imagemin-pngquant": "^7.0.0",
     "imagemin-svgo": "^7.0.0",
+    "kss": "^3.0.0-beta.25",
     "ngrok": "^2.3.0",
     "node-sass": "^4.11.0",
     "nodemon": "^1.18.11",
