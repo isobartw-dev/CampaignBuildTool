@@ -2,7 +2,7 @@
   "name": "project-dev-tool",
   "version": "3.0.0",
   "description": "ISOBAR TW frontend project development tool",
-  "dependencies": {
+  "devDependencies": {
     "autoprefixer": "^9.0.0",
     "browser-sync": "^2.23.6",
     "concurrently": "^4.1.0",
