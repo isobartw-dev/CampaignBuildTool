@@ -283,18 +283,17 @@
           "initial": "^\\.{componentName}(?:-[a-z][a-zA-Z0-9]+){0,1}(?:--[a-z][a-zA-Z0-9]+){0,2}(?:\\[.+\\])?$",
           "combined": "^\\.[a-z][a-zA-Z0-9]+(?:-[a-z][a-zA-Z0-9]+){0,1}(?:--[a-z][a-zA-Z0-9]+){0,2}(?:\\[.+\\])?$"
         },
-        "utilitySelectors": "^\\.[a-z][a-zA-Z0-9]+(?:-[a-z0-9]){0,1}(?:[a-zA-Z0-9]+){0,1}?$",
+        "utilitySelectors": "^\\.[a-z][a-zA-Z0-9]+(?:-[a-z0-9]){0,2}(?:[a-zA-Z0-9]+){0,1}?$",
         "implicitComponents": true,
         "implicitUtilities": "**/sass/base/*.scss"
       }
     },
     "ignoreFiles": [
+      "**/base.*",
+      "**/editor.*",
+      "**/reset.*",
       "**/css/style.css",
-      "**/css/style-*.css",
-      "./css/**/base.scss",
-      "./css/**/editor.scss",
-      "**/sass/reset.*",
-      "**/sass/base.scss"
+      "**/css/style-*.css"
     ]
   },
   "postcssSortingConfig": {
