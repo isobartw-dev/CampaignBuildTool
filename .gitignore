@@ -4,6 +4,7 @@ css/
 sass/
 images/
 mobile
+document
 font/
 source-map/
 *.html
