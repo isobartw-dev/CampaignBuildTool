@@ -25,7 +25,7 @@ function goFolder (files, callback) {
       var filter = imgFolder[i].replace('images/', '').replace('/', '-');
 
       if (file.indexOf(filter) > -1) {
-        var subFolder = !file.match(/\\-\w{1,}\\_/g) ? '' : file.match(/\\-\w{1,}\\_/g)[0].slice(1, -1) + '/';
+        var subFolder = !file.match(/\-\w+\_/g) ? '' : file.match(/\-\w+\_/g)[0].slice(1, -1) + '/';
 
         sort(file, imgFolder[i] + subFolder, filter);
         return;
