@@ -278,13 +278,19 @@
           ]
         }
       ],
+      "scss/dollar-variable-pattern": "^[a-z][a-zA-Z0-9]+(?:-[a-zA-Z0-9]+)*?$",
+      "scss/at-function-pattern": "^[a-z][a-zA-Z0-9]+(?:-[a-zA-Z0-9]+)*?$",
+      "scss/at-mixin-pattern": "^[a-z][a-zA-Z0-9]+(?:-[a-zA-Z0-9]+)*?$",
       "plugin/selector-bem-pattern": {
         "componentName": "^[a-z][a-zA-Z0-9]+$",
         "componentSelectors": {
           "initial": "^\\.{componentName}(?:-[a-z][a-zA-Z0-9]+){0,1}(?:--[a-z][a-zA-Z0-9]+){0,2}(?:\\[.+\\])?$",
           "combined": "^\\.[a-z][a-zA-Z0-9]+(?:-[a-z][a-zA-Z0-9]+){0,1}(?:--[a-z][a-zA-Z0-9]+){0,2}(?:\\[.+\\])?$"
         },
-        "utilitySelectors": "^\\.[a-z][a-zA-Z0-9]+(?:-[a-z0-9]){0,2}(?:[a-zA-Z0-9]+){0,1}?$",
+        "utilitySelectors": "^\\.[a-z][a-zA-Z0-9]+(?:-[a-zA-Z0-9]+){0,3}?$",
+        "ignoreSelectors": [
+          "\\#\\{.*\\}"
+        ],
         "implicitComponents": true,
         "implicitUtilities": "**/sass/base/*.scss"
       }
@@ -294,7 +300,8 @@
       "**/editor.*",
       "**/reset.*",
       "**/css/style.css",
-      "**/css/style-*.css"
+      "**/css/style-*.css",
+      "**/sass/style-*.scss"
     ]
   },
   "postcssSortingConfig": {
