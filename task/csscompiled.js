@@ -1,11 +1,11 @@
 var sass = require('node-sass');
+var globImporter = require('node-sass-glob-importer');
 var postcss = require('postcss');
 var autoPrefixer = require('autoprefixer');
 var sprite = require('postcss-sprites');
 var rebase = require('postcss-url');
 var stylelint = require('stylelint');
 var nano = require('cssnano');
-// var glob = require('glob');
 var fs = require('fs');
 var path = require('path');
 var imagesmin = require('./imagemin');
@@ -13,7 +13,7 @@ var spriteGroups = [];
 var file = fs.readFileSync('task/.changelog', 'utf-8');
 var mainFile = changeFile('task/.changelog');
 var optsNano = {preset: 'default'};
-var optsPrefixer = {browsers: ['last 1 versions', '> 5%']};
+var optsPrefixer = {browserslist: ['last 1 versions', '> 5%']};
 var optsRebase = {
   url: function (asset, dir) {
     var fileParse = asset.url.split('/');
@@ -24,9 +24,9 @@ var optsRebase = {
   }
 };
 var optsSprite = {
-  stylesheetPath: './' + dirPath(mainFile).split('css')[0] + 'css',
-  spritePath: './' + dirPath(mainFile).split('css')[0] + 'images',
-  basePath: './' + dirPath(mainFile).split('css')[0],
+  stylesheetPath: './' + dirPath(mainFile).split(/css|sass/)[0] + 'css',
+  spritePath: './' + dirPath(mainFile).split(/css|sass/)[0] + 'images',
+  basePath: './' + dirPath(mainFile).split(/css|sass/)[0],
   // verbose: true,
   groupBy: function (image) {
     var spriteGroup = image.url
@@ -34,13 +34,13 @@ var optsSprite = {
       .toString()
       .slice(0, -4);
     if (image.url.indexOf(spriteGroup) === -1) {
-      return Promise.reject(new Error('something bad happened'));
+      return Promise.reject();
     }
     return Promise.resolve(spriteGroup);
   },
   filterBy: function (image) {
     if (!/sprite/.test(image.url)) {
-      return Promise.reject(new Error('something bad happened'));
+      return Promise.reject();
     }
     return Promise.resolve();
   },
@@ -108,24 +108,29 @@ function changeFile (file) {
 
   if (hasCss) {
     apart.splice(sassIndex, apart.length);
+    return apart.join('/') + '/style-edit.css';
   } else {
-    apart.splice(sassIndex, apart.length, 'css');
+    apart.splice(sassIndex, apart.length, 'sass');
+    return apart.join('/') + '/style-edit.scss';
   }
-  return apart.join('/') + '/style-edit.css';
 }
 
-function dirPath (file) {
-  return path.dirname(file);
+function dirPath (file, dist) {
+  if (dist) {
+    return path.dirname(file).replace('sass', 'css');
+  } else {
+    return path.dirname(file);
+  }
 }
 
 function spritePath (cssFile) {
-  var cssPath = dirPath(cssFile);
+  var cssPath = dirPath(cssFile, true);
   var spritePath = (cssPath + '/images').replace('css/', '');
   return spritePath;
 }
 
 function mapAnnotation (cssFile) {
-  var cssPath = dirPath(cssFile);
+  var cssPath = dirPath(cssFile, true);
   var mapPath = 'source-map/' + cssPath + '/style.css.map';
   return path.relative(cssPath, mapPath).replace(/\\/g, '/');
 }
@@ -141,20 +146,21 @@ function lintCheck (cssFile) {
       if (data.errored === true) {
         console.log(data.output);
       } else {
-        console.log('stylelint 驗證完成!');
+        console.log('[stylelint] 格式驗證完成!');
         // console.log(styleFile, mainFile, file);
         compile(mainFile);
       }
     })
     .catch(function (err) {
       // do things with err e.g.
-      console.error(err.stack);
+      console.log('[stylelint] 有其他錯誤!');
+      console.error(err);
     });
 }
 
 function compile (cssFile) {
-  var cssPath = dirPath(cssFile) + '/style.css';
-  var cssSourcePath = dirPath(cssFile) + '/style-source.css';
+  var cssPath = dirPath(cssFile, true) + '/style.css';
+  var cssSourcePath = dirPath(cssFile, true) + '/style-source.css';
   var mapPath = mapAnnotation(cssFile).replace(/\.\.\//g, '');
   var sassPath = function (file) {
     var apart = dirPath(file).split(path.sep);
@@ -165,9 +171,11 @@ function compile (cssFile) {
     }
     return apart.join('/').split();
   };
+
   var sassResult = sass.renderSync({
     outFile: cssPath,
     file: cssFile,
+    importer: globImporter(),
     includePaths: sassPath(file),
     outputStyle: 'expanded',
     sourceMap: mapPath,
@@ -219,6 +227,14 @@ process
 if (file) {
   fs.stat(mainFile, function (error, data) {
     if (!error) {
+      lintCheck(file);
+    } else {
+      if (mainFile.indexOf('sass') > -1) {
+        mainFile = mainFile.replace(/sass(\/\S+.)scss/, 'css$1css');
+      } else {
+        mainFile = mainFile.replace(/css(\/\S+.)css/, 'sass$1scss');
+      }
+
       lintCheck(file);
     }
   });

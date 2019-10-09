@@ -23,6 +23,7 @@
     "kss": "^3.0.0-beta.25",
     "ngrok": "^2.3.0",
     "node-sass": "^4.11.0",
+    "node-sass-glob-importer": "^5.3.1",
     "nodemon": "^1.18.11",
     "postcss": "^7.0.14",
     "postcss-sprites": "4.2.1",
@@ -38,8 +39,9 @@
   "scripts": {
     "prepublish": "node task/init.js",
     "release": "node task/pre-release.js",
+    "document": "node_modules\\.bin\\kss --config document\\generator\\template\\config.json && del document\\item-*.html",
     "runIIS": "node task/runIIS.js",
-    "dev": "concurrently \"npm run watch:*\" \"node task/browsersync.js\"",
+    "dev": "concurrently \"npm run watch\" \"node task/browsersync.js\"",
     "watch:css": "node task/watch-css.js",
     "watch:image": "node task/watch-image.js",
     "watch": "concurrently \"npm:watch:*\"",
@@ -62,7 +64,14 @@
         "custom-properties",
         "dollar-variables",
         "declarations",
-        "rules",
+        {
+          "type": "at-rule",
+          "name": "if"
+        },
+        {
+          "type": "at-rule",
+          "name": "else"
+        },
         {
           "type": "at-rule",
           "name": "include",
@@ -73,6 +82,7 @@
           "name": "include",
           "hasBlock": true
         },
+        "rules",
         "at-rules"
       ],
       "order/properties-order": [
@@ -301,7 +311,8 @@
       "**/reset.*",
       "**/css/style.css",
       "**/css/style-*.css",
-      "**/sass/style-*.scss"
+      "**/sass/style-edit.scss",
+      "sass/style-edit.scss"
     ]
   },
   "postcssSortingConfig": {

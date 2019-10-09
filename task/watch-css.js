@@ -2,7 +2,7 @@ var nodemon = require('nodemon');
 var glob = require('glob');
 var fs = require('fs');
 var sassFolder = glob.sync('**/sass/', {matchBase: true, ignore: ['node_modules/**', 'source-map/**']});
-var cssFolderIgnore = ['style.css', 'style-edit.css', 'style-source.css'];
+var cssFolderIgnore = ['style.css', 'style-edit.css', 'style-source.css', 'style-edit.sass'];
 
 nodemon({
   runOnChangeOnly: true,
