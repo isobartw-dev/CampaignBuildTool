@@ -37,7 +37,7 @@ exports.writeTime = function () {
 exports.writeIISData = function () {
   var glob = require('glob');
   var dir = path.dirname(__dirname);
-  var file = dir + '\\' + glob.sync('**/*.sln', {matchBase: true, ignore: 'node_modules/**'}).toString();
+  var file = dir + '\\' + glob.sync('**/*.sln', {matchBase: true, ignore: '**/node_modules/**'}).toString();
   var data = fs.readFileSync(file, 'utf8').split('\r');
 
   function writeData (type, text, message) {

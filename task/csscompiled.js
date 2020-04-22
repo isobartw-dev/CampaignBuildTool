@@ -13,7 +13,7 @@ var spriteGroups = [];
 var file = fs.readFileSync('task/.changelog', 'utf-8');
 var mainFile = changeFile('task/.changelog');
 var optsNano = {preset: 'default'};
-var optsPrefixer = {browserslist: ['last 1 versions', '> 5%']};
+// var optsPrefixer = {};
 var optsRebase = {
   url: function (asset, dir) {
     var fileParse = asset.url.split('/');
@@ -153,8 +153,8 @@ function lintCheck (cssFile) {
     })
     .catch(function (err) {
       // do things with err e.g.
-      console.log('[stylelint] 有其他錯誤!');
-      console.error(err);
+      console.log('[stylelint] 符號有錯誤!');
+      console.error(err.formatted);
     });
 }
 
@@ -186,7 +186,7 @@ function compile (cssFile) {
     inline: false,
     annotation: mapAnnotation(cssFile)
   };
-  var Processor = postcss([rebase(optsRebase), sprite(optsSprite), autoPrefixer(optsPrefixer), nano(optsNano)]);
+  var Processor = postcss([rebase(optsRebase), sprite(optsSprite), autoPrefixer(), nano(optsNano)]);
 
   console.log('==================================');
   console.log(cssPath + ' 產出中...');

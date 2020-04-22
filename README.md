@@ -4,9 +4,11 @@
 專案開發前端自動化流程工具  
 有任何問題請用 issues 提出或是 pull resuest
 
+更版後同步更新到 IT 的 CampaignNameVx
+
 ## 注意
 
-- 請升級至 Node Ver.10 以上
+- 請升級至 Node Ver.12 以上
 - 更名後 v1.0、v2.0 的 package.json 請更改 `repository` `bugs` `homepage` 的網址
 - 使用 v1.0 precss 開發的專案，請下載 v1.0 版本至專案使用 (之後會停用)
 

@@ -39,13 +39,19 @@ function newItem (path, name, type) {
               switch (type) {
                 case 'folder':
                   fs.mkdirsSync(path + item);
+                  item.indexOf('source') === -1 ? console.log(sort + ' | 建立 ' + path + item) : console.log('建立 ' + path + item);
                   break;
                 case 'file':
-                  fs.createFileSync(path + item);
+                  fs.stat(path.replace('sass', 'css') + 'style-edit.css', function (error, stats) {
+                    if (error) {
+                      fs.createFileSync(path + item);
+                      item.indexOf('source') === -1 ? console.log(sort + ' | 建立 ' + path + item) : console.log('建立 ' + path + item);
+                    } else {
+                      console.log(sort + ' | ' + path.replace('sass', 'css') + 'style-edit.css 已存在');
+                    }
+                  });
                   break;
               }
-
-              item.indexOf('source') === -1 ? console.log(sort + ' | 建立 ' + path + item) : console.log('建立 ' + path + item);
             }
           } else {
             item.indexOf('source') === -1 ? console.log(sort + ' | ' + path + item + ' 已存在') : console.log(path + item + ' 已存在');
