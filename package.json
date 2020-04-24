@@ -1,6 +1,6 @@
 {
   "name": "project-dev-tool",
-  "version": "3.2.1",
+  "version": "3.2.2",
   "description": "ISOBAR TW frontend project development tool",
   "devDependencies": {
     "autoprefixer": "^9.7.1",
