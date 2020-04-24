@@ -167,7 +167,7 @@ function compile (cssFile) {
     var sassIndex = apart.indexOf('sass');
 
     if (sassIndex < apart.length - 1) {
-      apart = apart.slice(sassIndex, sassIndex + 1);
+      apart = apart.slice(0, sassIndex + 1);
     }
     return apart.join('/').split();
   };
